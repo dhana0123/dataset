@@ -205,6 +205,7 @@ def load_or_generate_scripts(args: argparse.Namespace) -> list[DialogueScript]:
                 model_id=args.llm_model,
                 device=args.device,
                 load_in_4bit=args.llm_load_in_4bit,
+                strict_llm=args.strict_llm,
             )
             if script.turns and script.turns[0].role != "agent":
                 from .sarvam_scripts import _agent_greeting
@@ -238,6 +239,14 @@ def main(argv: list[str] | None = None) -> None:
     )
     p.add_argument("--llm-model", type=str, default=DEFAULT_LLM)
     p.add_argument("--llm-load-in-4bit", action="store_true")
+    p.add_argument(
+        "--strict-llm",
+        action="store_true",
+        help=(
+            "Fail if sarvam-30b cannot load (no auto-fallback to sarvam-m when "
+            "transformers lacks ALL_ATTENTION_FUNCTIONS)."
+        ),
+    )
     p.add_argument("--max-turns", type=int, default=12)
     p.add_argument("--agent-style", type=str, default="leela")
     p.add_argument("--user-voice", type=str, default="male")

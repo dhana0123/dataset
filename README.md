@@ -90,29 +90,31 @@ Uploads private Hub dataset by default. Listen on the Hub **Files** tab.
 
 ## Synthetic duplex (open Sarvam-M → Parler → IM pack)
 
-PersonaPlex-style pipeline: **local open-source** [`sarvamai/sarvam-30b`](https://huggingface.co/sarvamai/sarvam-30b) (default; strong Indic Te/Hi/Ta/Kn) writes two-speaker Telugu scripts → Indic Parler TTS → stereo stitch → same `wav/` + `SPEAKER_MAIN` JSON + `train.jsonl` as the packer. **No Sarvam API key.** Fallback mid-size: `--llm-model sarvamai/sarvam-m`.
+PersonaPlex-style pipeline: **local open-source** [`sarvamai/sarvam-30b`](https://huggingface.co/sarvamai/sarvam-30b) (default; strong Indic Te/Hi/Ta/Kn) writes two-speaker Telugu scripts → Indic Parler TTS → stereo stitch → same `wav/` + `SPEAKER_MAIN` JSON + `train.jsonl` as the packer. **No Sarvam API key.**
 
 Needs a GPU with enough VRAM for Sarvam-30B (MoE; use `--llm-load-in-4bit` if tight) plus Parler. Prefer the TTS/eval venv with `parler-tts` installed.
 
-**Sarvam-30B requires new transformers** (needs `ALL_ATTENTION_FUNCTIONS`):
+**Transformers mismatch (default = auto-fallback):** Sarvam-30B needs `ALL_ATTENTION_FUNCTIONS` (`transformers>=4.57`). Typical parler-tts venvs ship older transformers (e.g. 4.46). By default the CLI **warns and loads** [`sarvamai/sarvam-m`](https://huggingface.co/sarvamai/sarvam-m) instead so synthetic runs continue. Pass `--strict-llm` to fail hard and enforce 30B.
+
+To keep using 30B:
 
 ```bash
 pip install -U "transformers>=4.57.0" accelerate
 ```
 
-If that breaks Parler, generate scripts first, then TTS from JSON:
+If that breaks Parler, split LLM and TTS:
 
 ```bash
-# 1) scripts only (after upgrading transformers)
+# 1) scripts only (LLM venv with newer transformers)
 python -m duplex_data.synthetic --out ./moshi_im_synth_te5 --num-dialogs 5 \
-  --domains recruitment,customer_support,banking --dry-run-scripts
+  --domains recruitment,customer_support,banking --dry-run-scripts --strict-llm
 
 # 2) TTS+pack from saved scripts (older transformers OK if Parler needs it)
 python -m duplex_data.synthetic --out ./moshi_im_synth_te5 --num-dialogs 5 \
   --scripts-dir ./moshi_im_synth_te5/scripts --hf-dataset BelluAi/dupxel-indic
 ```
 
-Or skip 30B: `--llm-model sarvamai/sarvam-m`
+Or pin the mid-size model explicitly: `--llm-model sarvamai/sarvam-m`
 
 ```bash
 cd data && pip install -e ".[synthetic]"
@@ -128,11 +130,10 @@ python -m duplex_data.synthetic \
   --domains recruitment,customer_support \
   --dry-run-scripts --skip-llm
 
-# Full: Sarvam-30B scripts + Parler audio + pack (+ Hub):
+# Full: default LLM (30B, or auto sarvam-m on old transformers) + Parler + pack (+ Hub):
 python -m duplex_data.synthetic \
   --out ./moshi_im_synth_te \
   --lang te \
-  --llm-model sarvamai/sarvam-30b \
   --num-dialogs 5 \
   --domains recruitment,customer_support,banking \
   --agent-style leela \

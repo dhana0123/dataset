@@ -13,6 +13,7 @@ from .topics import ScenarioDraw
 logger = logging.getLogger("duplex_data.sarvam_scripts")
 
 DEFAULT_LLM = "sarvamai/sarvam-30b"
+FALLBACK_LLM = "sarvamai/sarvam-m"
 
 LANG_NAME = {
     "te": "Telugu",
@@ -53,8 +54,37 @@ TRANSFORMERS_MIN_HINT = (
     '  pip install -U "transformers>=4.57.0" accelerate\n\n'
     "Then retry. If Parler breaks after the upgrade, either:\n"
     "  • use a separate LLM venv for --dry-run-scripts, then --scripts-dir for TTS, or\n"
-    "  • fall back: --llm-model sarvamai/sarvam-m\n"
+    f"  • omit --strict-llm (default auto-falls back to {FALLBACK_LLM}), or\n"
+    f"  • force: --llm-model {FALLBACK_LLM}\n"
 )
+
+
+def resolve_llm_model(model_id: str, *, strict_llm: bool = False) -> str:
+    """Map sarvam-30b → sarvam-m when transformers lacks ALL_ATTENTION_FUNCTIONS."""
+    if "sarvam-30b" not in model_id.lower():
+        return model_id
+
+    import transformers
+
+    try:
+        from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS  # noqa: F401
+    except ImportError as exc:
+        ver = getattr(transformers, "__version__", "?")
+        if strict_llm:
+            raise SystemExit(
+                f"{TRANSFORMERS_MIN_HINT}\n"
+                f"Installed transformers=={ver}\n"
+                f"Underlying error: {exc}"
+            ) from exc
+        logger.warning(
+            "sarvam-30b needs transformers>=4.57 (ALL_ATTENTION_FUNCTIONS missing; "
+            "have %s). Falling back to %s. "
+            "Upgrade transformers to keep 30B, or pass --strict-llm to fail instead.",
+            ver,
+            FALLBACK_LLM,
+        )
+        return FALLBACK_LLM
+    return model_id
 
 
 def load_llm(
@@ -62,26 +92,17 @@ def load_llm(
     *,
     device: str = "cuda",
     load_in_4bit: bool = False,
-) -> tuple[Any, Any]:
-    """Load tokenizer + causal LM once (cached)."""
+    strict_llm: bool = False,
+) -> tuple[Any, Any, str]:
+    """Load tokenizer + causal LM once (cached). Returns (tok, model, resolved_model_id)."""
+    model_id = resolve_llm_model(model_id, strict_llm=strict_llm)
     key = f"{model_id}|{device}|4bit={load_in_4bit}"
     if key in _llm_bundle:
-        return _llm_bundle[key]["tok"], _llm_bundle[key]["model"]
+        return _llm_bundle[key]["tok"], _llm_bundle[key]["model"], model_id
 
     import torch
     import transformers
     from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    # sarvam-30b remote code imports ALL_ATTENTION_FUNCTIONS (newer transformers)
-    if "sarvam-30b" in model_id.lower():
-        try:
-            from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS  # noqa: F401
-        except ImportError as exc:
-            raise SystemExit(
-                f"{TRANSFORMERS_MIN_HINT}\n"
-                f"Installed transformers=={getattr(transformers, '__version__', '?')}\n"
-                f"Underlying error: {exc}"
-            ) from exc
 
     logger.info(
         "Loading open-source LLM %s (transformers %s) …",
@@ -105,14 +126,26 @@ def load_llm(
     try:
         model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
     except ImportError as exc:
-        if "ALL_ATTENTION_FUNCTIONS" in str(exc):
-            raise SystemExit(
-                f"{TRANSFORMERS_MIN_HINT}\nUnderlying error: {exc}"
-            ) from exc
+        if "ALL_ATTENTION_FUNCTIONS" in str(exc) and "sarvam-30b" in model_id.lower():
+            if strict_llm:
+                raise SystemExit(
+                    f"{TRANSFORMERS_MIN_HINT}\nUnderlying error: {exc}"
+                ) from exc
+            logger.warning(
+                "Load failed (%s); falling back to %s",
+                exc,
+                FALLBACK_LLM,
+            )
+            return load_llm(
+                FALLBACK_LLM,
+                device=device,
+                load_in_4bit=load_in_4bit,
+                strict_llm=True,
+            )
         raise
     model.eval()
     _llm_bundle[key] = {"tok": tok, "model": model}
-    return tok, model
+    return tok, model, model_id
 
 
 def _build_prompt(draw: ScenarioDraw, lang: str, max_turns: int) -> str:
@@ -213,12 +246,18 @@ def generate_dialogue(
     model_id: str = DEFAULT_LLM,
     device: str = "cuda",
     load_in_4bit: bool = False,
+    strict_llm: bool = False,
     max_new_tokens: int = 1024,
     temperature: float = 0.85,
 ) -> DialogueScript:
     import torch
 
-    tok, model = load_llm(model_id, device=device, load_in_4bit=load_in_4bit)
+    tok, model, resolved_id = load_llm(
+        model_id,
+        device=device,
+        load_in_4bit=load_in_4bit,
+        strict_llm=strict_llm,
+    )
     user_prompt = _build_prompt(draw, lang, max_turns)
     messages = [
         {
@@ -266,7 +305,7 @@ def generate_dialogue(
                 lang=lang,
                 agent_role=draw.agent_role,
                 user_role=draw.user_role,
-                llm=model_id,
+                llm=resolved_id,
                 turns=turns,
             )
         except Exception as exc:  # noqa: BLE001
