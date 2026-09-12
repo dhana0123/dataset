@@ -4,9 +4,9 @@
 Run in a dedicated TTS venv (not moshi / duplex-data packer venv).
 
   python scripts/compare_te_tts.py \\
+    --models both \\
     --text "నమస్కారం, మీరు ఎలా ఉన్నారు?" \\
-    --ref-audio prompts/te_ref.wav \\
-    --ref-text "..." \\
+    --ref-text "exact transcript of audio.flac" \\
     --hf-repo BelluAi/te-tts-ab-listen
 """
 
@@ -20,6 +20,9 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_REF_AUDIO = REPO_ROOT / "audio.flac"
+
 DEFAULT_TE_TEXTS = [
     "నమస్కారం, మీరు ఎలా ఉన్నారు?",
     "అవును, సరే. నేను మీ ఖాతా వివరాలు చూస్తున్నాను.",
@@ -32,6 +35,24 @@ DEFAULT_PARLER_DESC = (
     "Prakash's voice is clear and slightly expressive, speaking Telugu at a "
     "moderate pace with very high quality audio and almost no background noise."
 )
+
+WANDB_FIX = """\
+IndicF5 failed because `wandb` is broken in this venv (common in venv-moshi).
+
+Fix on the GPU box (prefer a dedicated TTS venv):
+
+  python3.10 -m venv ~/tts-eval/.venv && source ~/tts-eval/.venv/bin/activate
+  pip install -U pip
+  pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124
+  pip install "git+https://github.com/ai4bharat/IndicF5.git"
+  pip install "git+https://github.com/huggingface/parler-tts.git"
+  pip install soundfile huggingface_hub transformers accelerate numpy
+  pip install --force-reinstall --no-cache-dir "wandb>=0.19"
+
+If you must stay in the current venv:
+
+  pip install --force-reinstall --no-cache-dir "wandb>=0.19"
+"""
 
 README_MD = """---
 license: apache-2.0
@@ -81,16 +102,58 @@ def load_texts(args: argparse.Namespace) -> list[str]:
     return texts
 
 
+def ensure_ref_wav(ref_audio: Path, cache_dir: Path) -> Path:
+    """IndicF5 is happiest with WAV; convert flac/ogg/mp3 → 24 kHz mono wav."""
+    ref_audio = ref_audio.resolve()
+    if not ref_audio.is_file():
+        raise SystemExit(f"Missing ref audio: {ref_audio}")
+    if ref_audio.suffix.lower() == ".wav":
+        return ref_audio
+
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    out = cache_dir / f"{ref_audio.stem}_24k.wav"
+    if out.is_file() and out.stat().st_mtime >= ref_audio.stat().st_mtime:
+        print(f"[IndicF5] using cached ref wav: {out}")
+        return out
+
+    print(f"[IndicF5] converting {ref_audio.name} → {out.name} (24 kHz mono)")
+    audio, sr = sf.read(str(ref_audio), always_2d=False)
+    audio = np.asarray(audio, dtype=np.float32)
+    if audio.ndim > 1:
+        audio = audio.mean(axis=1)
+    if sr != 24000:
+        # lightweight linear resample (ok for short voice prompts)
+        n_out = int(round(len(audio) * 24000.0 / float(sr)))
+        x_old = np.linspace(0.0, 1.0, num=len(audio), endpoint=False)
+        x_new = np.linspace(0.0, 1.0, num=n_out, endpoint=False)
+        audio = np.interp(x_new, x_old, audio).astype(np.float32)
+        sr = 24000
+    sf.write(out, audio, sr)
+    return out
+
+
+def _check_wandb() -> None:
+    try:
+        from wandb.proto.wandb_telemetry_pb2 import Imports  # noqa: F401
+    except Exception as exc:  # noqa: BLE001 — surface broken installs clearly
+        raise SystemExit(f"{WANDB_FIX}\nUnderlying error: {exc}") from exc
+
+
 def gen_indicf5(
     texts: list[str],
     out_dir: Path,
     ref_audio: Path,
     ref_text: str,
 ) -> list[dict]:
+    _check_wandb()
     from transformers import AutoModel
 
     print("[IndicF5] loading ai4bharat/IndicF5 …")
-    model = AutoModel.from_pretrained("ai4bharat/IndicF5", trust_remote_code=True)
+    try:
+        model = AutoModel.from_pretrained("ai4bharat/IndicF5", trust_remote_code=True)
+    except ImportError as exc:
+        raise SystemExit(f"{WANDB_FIX}\nUnderlying error: {exc}") from exc
+
     rows: list[dict] = []
     for i, text in enumerate(texts):
         print(f"[IndicF5] {i + 1}/{len(texts)}: {text[:80]}")
@@ -198,8 +261,8 @@ def main() -> None:
     p.add_argument(
         "--ref-audio",
         type=Path,
-        default=None,
-        help="IndicF5 reference wav (required unless --models parler).",
+        default=DEFAULT_REF_AUDIO if DEFAULT_REF_AUDIO.is_file() else None,
+        help=f"IndicF5 reference audio (default: {DEFAULT_REF_AUDIO.name} if present).",
     )
     p.add_argument(
         "--ref-text",
@@ -225,22 +288,25 @@ def main() -> None:
     texts = load_texts(args)
     print(f"{len(texts)} prompt(s)")
 
-    if args.models in ("both", "indicf5"):
-        if not args.ref_audio or not args.ref_text:
+    need_f5 = args.models in ("both", "indicf5")
+    if need_f5:
+        if not args.ref_audio:
             raise SystemExit(
-                "IndicF5 needs --ref-audio and --ref-text "
-                "(or use --models parler)."
+                "IndicF5 needs --ref-audio (place audio.flac in repo root or pass path)."
             )
-        if not args.ref_audio.is_file():
-            raise SystemExit(f"Missing ref audio: {args.ref_audio}")
+        if not args.ref_text:
+            raise SystemExit(
+                "IndicF5 needs --ref-text = exact words spoken in the reference audio."
+            )
 
     args.out.mkdir(parents=True, exist_ok=True)
     wav_dir = args.out / "wav"
     wav_dir.mkdir(exist_ok=True)
 
     meta: list[dict] = []
-    if args.models in ("both", "indicf5"):
-        meta.extend(gen_indicf5(texts, wav_dir, args.ref_audio, args.ref_text))
+    if need_f5:
+        ref_wav = ensure_ref_wav(args.ref_audio, args.out / "prompts")
+        meta.extend(gen_indicf5(texts, wav_dir, ref_wav, args.ref_text))
     if args.models in ("both", "parler"):
         meta.extend(gen_parler(texts, wav_dir, args.parler_desc))
 

@@ -42,7 +42,7 @@ Defaults: **Whisper** ASR, **community-1** diarization, Hub push **on**.
 ## Telugu TTS A/B listen test (IndicF5 + Parler)
 
 Side-by-side samples for evaluating TTS before synthetic duplex training.
-Use a **separate** venv (not the packer `.venv`).
+Use a **separate** venv — **do not use `venv-moshi`** (broken `wandb` / dep clashes).
 
 ```bash
 python3.10 -m venv ~/tts-eval/.venv && source ~/tts-eval/.venv/bin/activate
@@ -51,30 +51,29 @@ pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124
 pip install "git+https://github.com/ai4bharat/IndicF5.git"
 pip install "git+https://github.com/huggingface/parler-tts.git"
 pip install soundfile huggingface_hub transformers accelerate numpy
+pip install --force-reinstall --no-cache-dir "wandb>=0.19"
 
 export HF_TOKEN=...   # write access; do not paste into chat
 
-# Put a short clean Telugu reference clip + matching transcript for IndicF5:
-#   prompts/te_ref.wav  +  --ref-text "…"
-
-cd /path/to/DUPLEX/data   # or clone of this repo on the GPU box
+cd ~/dataset   # or path to this repo on the GPU box
+# Default IndicF5 ref is repo-root audio.flac (auto-converted to 24 kHz wav).
+# --ref-text MUST be the exact words spoken in that file.
 
 python scripts/compare_te_tts.py \
-  --texts-file scripts/te_prompts_sample.txt \
-  --ref-audio prompts/te_ref.wav \
-  --ref-text "PASTE_EXACT_TRANSCRIPT_OF_REF_WAV" \
-  --hf-repo BelluAi/te-tts-ab-listen
-
-# Prompt from SSH (repeat --text):
-python scripts/compare_te_tts.py \
+  --models both \
   --text "నమస్కారం, మీరు ఎలా ఉన్నారు?" \
   --text "క్షమించండి, మళ్లీ చెప్పగలరా?" \
-  --ref-audio prompts/te_ref.wav \
-  --ref-text "…" \
+  --ref-text "EXACT_TRANSCRIPT_OF_audio.flac" \
   --hf-repo BelluAi/te-tts-ab-listen
 
-# Parler only (no ref wav):
+# Parler only (no ref):
 python scripts/compare_te_tts.py --models parler --text "నమస్కారం" --hf-repo BelluAi/te-tts-ab-listen
+```
+
+If you see `ImportError: cannot import name 'Imports' from 'wandb.proto...'`:
+
+```bash
+pip install --force-reinstall --no-cache-dir "wandb>=0.19"
 ```
 
 Outputs `te_tts_ab/wav/{000_indicf5,000_parler}.wav` + `manifest.jsonl`, then uploads (private by default). Listen on the Hub **Files** tab.
