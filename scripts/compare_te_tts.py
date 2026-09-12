@@ -44,109 +44,110 @@ SPEAKERS = {
 }
 
 # Style templates use {speaker}; filled by apply_voice().
+# All styles request a fast speaking pace (user preference).
 PARLER_STYLE_PRESETS: dict[str, str] = {
     # --- baseline / channel ---
     "clean": (
         "{speaker}'s voice is clear and slightly expressive, speaking Telugu at a "
-        "moderate pace with very high quality audio and almost no background noise."
+        "fast pace with very high quality audio and almost no background noise."
     ),
     "phone": (
         "{speaker} speaks Telugu like a real phone call: casual, slightly expressive, "
-        "thinking while talking, with natural pauses and breath, moderate pace, "
+        "thinking while talking, with natural pauses and breath, fast pace, "
         "close microphone, very high quality audio, almost no background noise."
     ),
     "backchannel": (
         "{speaker} speaks Telugu in a very natural conversational phone style, "
         "with human hesitations and filled pauses like uh, uhh, um, and okay, "
         "soft backchannel acknowledgments, slight false starts, not reading a script, "
-        "warm and slightly expressive, moderate speed, close-sounding recording, "
+        "warm and slightly expressive, fast pace, close-sounding recording, "
         "very clear high quality audio with almost no background noise."
     ),
     "listener": (
         "{speaker} gives short soft Telugu listener responses on a phone call, "
         "with quick backchannels and filled pauses like uh-huh, uhh, mm, and okay, "
-        "brief and natural, not exaggerated, close microphone, very high quality audio."
+        "brief and natural, fast pace, not exaggerated, close microphone, very high quality audio."
     ),
     # --- positive ---
     "happy": (
         "{speaker} speaks Telugu in a happy, upbeat, smiling feminine voice, cheerful and warm, "
-        "slightly higher pitch, lively and positive energy, moderate pace, "
+        "slightly higher pitch, lively and positive energy, fast pace, "
         "close microphone, very high quality audio with almost no background noise."
     ),
     "joyful": (
         "{speaker} speaks Telugu with a joyful, bright, laughing-smile tone, "
-        "very expressive and energetic, delighted and friendly, slightly fast pace, "
+        "very expressive and energetic, delighted and friendly, fast pace, "
         "close-sounding recording, very clear high quality audio with almost no background noise."
     ),
     "excited": (
-        "{speaker} speaks Telugu excitedly, high energy, fast pace, elevated pitch, "
+        "{speaker} speaks Telugu excitedly, high energy, very fast pace, elevated pitch, "
         "enthusiastic and animated, close microphone, very high quality audio."
     ),
     "friendly": (
         "{speaker} speaks Telugu in a warm, friendly, welcoming tone, soft smile in the voice, "
-        "relaxed moderate pace, close-sounding recording, very high quality audio."
+        "fast pace, close-sounding recording, very high quality audio."
     ),
     "playful": (
         "{speaker} speaks Telugu playfully, light teasing smile, slightly higher pitch, "
-        "bouncy and informal, moderate pace, very clear high quality audio."
+        "bouncy and informal, fast pace, very clear high quality audio."
     ),
-    # --- calm / soft ---
+    # --- calm / soft (still fast delivery per user request) ---
     "calm": (
         "{speaker} speaks Telugu calmly and steadily, soothing, low expressivity, "
-        "slightly slow pace, balanced pitch, close microphone, very high quality audio."
+        "fast pace, balanced pitch, close microphone, very high quality audio."
     ),
     "soft": (
         "{speaker} speaks Telugu softly and gently, quiet close-up voice, caring tone, "
-        "slow to moderate pace, very clear audio with almost no background noise."
+        "fast pace, very clear audio with almost no background noise."
     ),
     "whisper": (
         "{speaker} whispers Telugu quietly and intimately, breathy soft voice, "
-        "very close microphone, slow pace, clear recording with almost no noise."
+        "very close microphone, fast pace, clear recording with almost no noise."
     ),
     "tired": (
         "{speaker} speaks Telugu in a tired, weary voice, slightly lower pitch, "
-        "slower pace, soft and drained, close microphone, very high quality audio."
+        "fast pace, soft and drained, close microphone, very high quality audio."
     ),
     # --- negative / intense ---
     "sad": (
-        "{speaker} speaks Telugu sadly, low pitch, slow pace, soft and melancholic, "
+        "{speaker} speaks Telugu sadly, low pitch, fast pace, soft and melancholic, "
         "slightly monotone with quiet emotion, close recording, very high quality audio."
     ),
     "angry": (
         "{speaker} speaks Telugu angrily, sharp and forceful, higher intensity, "
-        "faster pace, tense pitch, close microphone, very high quality audio."
+        "fast pace, tense pitch, close microphone, very high quality audio."
     ),
     "annoyed": (
         "{speaker} speaks Telugu in an annoyed, impatient tone, clipped and irritated, "
-        "slightly fast pace, close-sounding recording, very high quality audio."
+        "fast pace, close-sounding recording, very high quality audio."
     ),
     "fear": (
         "{speaker} speaks Telugu with fear and anxiety, shaky, hesitant, slightly higher pitch, "
-        "uneven pace, close microphone, very high quality audio."
+        "fast pace, close microphone, very high quality audio."
     ),
     "surprised": (
         "{speaker} speaks Telugu with surprise, sudden raised pitch, animated and startled, "
-        "expressive, moderate-fast pace, very clear high quality audio."
+        "expressive, fast pace, very clear high quality audio."
     ),
     "urgent": (
-        "{speaker} speaks Telugu urgently, fast and insistent, serious, slightly raised pitch, "
+        "{speaker} speaks Telugu urgently, very fast and insistent, serious, slightly raised pitch, "
         "close microphone, very high quality audio with almost no background noise."
     ),
     # --- formal / customer-care ---
     "formal": (
-        "{speaker} speaks Telugu formally and politely, clear diction, measured moderate pace, "
+        "{speaker} speaks Telugu formally and politely, clear diction, fast pace, "
         "professional customer-service tone, close microphone, very high quality audio."
     ),
     "polite": (
-        "{speaker} speaks Telugu politely and respectfully, soft smile, careful wording pace, "
+        "{speaker} speaks Telugu politely and respectfully, soft smile, fast pace, "
         "warm but controlled, close-sounding recording, very high quality audio."
     ),
     "empathetic": (
         "{speaker} speaks Telugu empathetically, caring and reassuring, soft and warm, "
-        "slightly slow pace, close microphone, very high quality audio."
+        "fast pace, close microphone, very high quality audio."
     ),
     "news": (
-        "{speaker} speaks Telugu like a news reader, clear, neutral, steady pace, "
+        "{speaker} speaks Telugu like a news reader, clear, neutral, fast pace, "
         "professional broadcast tone, very high quality studio audio."
     ),
     # Leela — warm + fast (Indic Parler named speaker)
