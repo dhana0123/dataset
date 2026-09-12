@@ -29,129 +29,122 @@ DEFAULT_TE_TEXTS = [
     "క్షమించండి, మళ్లీ చెప్పగలరా?",
 ]
 
-# Telugu speakers: Prakash / Lalitha / Kiran (indic-parler-tts card).
-# Prosody lives in the *description*. Use --parler-styles a,b,c for A/B.
+# Telugu speakers on indic-parler-tts: Prakash (M), Lalitha (F), Kiran.
+# Default voice is female (Lalitha). Override with --voice male.
+SPEAKERS = {
+    "female": "Lalitha",
+    "male": "Prakash",
+    "girl": "Lalitha",
+    "woman": "Lalitha",
+    "boy": "Prakash",
+    "man": "Prakash",
+}
+
+# Style templates use {speaker}; filled by apply_voice().
 PARLER_STYLE_PRESETS: dict[str, str] = {
     # --- baseline / channel ---
     "clean": (
-        "Prakash's voice is clear and slightly expressive, speaking Telugu at a "
+        "{speaker}'s voice is clear and slightly expressive, speaking Telugu at a "
         "moderate pace with very high quality audio and almost no background noise."
     ),
     "phone": (
-        "Prakash speaks Telugu like a real phone call: casual, slightly expressive, "
+        "{speaker} speaks Telugu like a real phone call: casual, slightly expressive, "
         "thinking while talking, with natural pauses and breath, moderate pace, "
         "close microphone, very high quality audio, almost no background noise."
     ),
     "backchannel": (
-        "Prakash speaks Telugu in a very natural conversational phone style, "
+        "{speaker} speaks Telugu in a very natural conversational phone style, "
         "with human hesitations and filled pauses like uh, uhh, um, and okay, "
         "soft backchannel acknowledgments, slight false starts, not reading a script, "
         "warm and slightly expressive, moderate speed, close-sounding recording, "
         "very clear high quality audio with almost no background noise."
     ),
     "listener": (
-        "Prakash gives short soft Telugu listener responses on a phone call, "
+        "{speaker} gives short soft Telugu listener responses on a phone call, "
         "with quick backchannels and filled pauses like uh-huh, uhh, mm, and okay, "
         "brief and natural, not exaggerated, close microphone, very high quality audio."
     ),
     # --- positive ---
     "happy": (
-        "Prakash speaks Telugu in a happy, upbeat, smiling voice, cheerful and warm, "
+        "{speaker} speaks Telugu in a happy, upbeat, smiling feminine voice, cheerful and warm, "
         "slightly higher pitch, lively and positive energy, moderate pace, "
         "close microphone, very high quality audio with almost no background noise."
     ),
     "joyful": (
-        "Prakash speaks Telugu with a joyful, bright, laughing-smile tone, "
+        "{speaker} speaks Telugu with a joyful, bright, laughing-smile tone, "
         "very expressive and energetic, delighted and friendly, slightly fast pace, "
         "close-sounding recording, very clear high quality audio with almost no background noise."
     ),
     "excited": (
-        "Prakash speaks Telugu excitedly, high energy, fast pace, elevated pitch, "
+        "{speaker} speaks Telugu excitedly, high energy, fast pace, elevated pitch, "
         "enthusiastic and animated, close microphone, very high quality audio."
     ),
     "friendly": (
-        "Prakash speaks Telugu in a warm, friendly, welcoming tone, soft smile in the voice, "
+        "{speaker} speaks Telugu in a warm, friendly, welcoming tone, soft smile in the voice, "
         "relaxed moderate pace, close-sounding recording, very high quality audio."
     ),
     "playful": (
-        "Prakash speaks Telugu playfully, light teasing smile, slightly higher pitch, "
+        "{speaker} speaks Telugu playfully, light teasing smile, slightly higher pitch, "
         "bouncy and informal, moderate pace, very clear high quality audio."
     ),
     # --- calm / soft ---
     "calm": (
-        "Prakash speaks Telugu calmly and steadily, soothing, low expressivity, "
+        "{speaker} speaks Telugu calmly and steadily, soothing, low expressivity, "
         "slightly slow pace, balanced pitch, close microphone, very high quality audio."
     ),
     "soft": (
-        "Prakash speaks Telugu softly and gently, quiet close-up voice, caring tone, "
+        "{speaker} speaks Telugu softly and gently, quiet close-up voice, caring tone, "
         "slow to moderate pace, very clear audio with almost no background noise."
     ),
     "whisper": (
-        "Prakash whispers Telugu quietly and intimately, breathy soft voice, "
+        "{speaker} whispers Telugu quietly and intimately, breathy soft voice, "
         "very close microphone, slow pace, clear recording with almost no noise."
     ),
     "tired": (
-        "Prakash speaks Telugu in a tired, weary voice, slightly lower pitch, "
+        "{speaker} speaks Telugu in a tired, weary voice, slightly lower pitch, "
         "slower pace, soft and drained, close microphone, very high quality audio."
     ),
     # --- negative / intense ---
     "sad": (
-        "Prakash speaks Telugu sadly, low pitch, slow pace, soft and melancholic, "
+        "{speaker} speaks Telugu sadly, low pitch, slow pace, soft and melancholic, "
         "slightly monotone with quiet emotion, close recording, very high quality audio."
     ),
     "angry": (
-        "Prakash speaks Telugu angrily, sharp and forceful, higher intensity, "
+        "{speaker} speaks Telugu angrily, sharp and forceful, higher intensity, "
         "faster pace, tense pitch, close microphone, very high quality audio."
     ),
     "annoyed": (
-        "Prakash speaks Telugu in an annoyed, impatient tone, clipped and irritated, "
+        "{speaker} speaks Telugu in an annoyed, impatient tone, clipped and irritated, "
         "slightly fast pace, close-sounding recording, very high quality audio."
     ),
     "fear": (
-        "Prakash speaks Telugu with fear and anxiety, shaky, hesitant, slightly higher pitch, "
+        "{speaker} speaks Telugu with fear and anxiety, shaky, hesitant, slightly higher pitch, "
         "uneven pace, close microphone, very high quality audio."
     ),
     "surprised": (
-        "Prakash speaks Telugu with surprise, sudden raised pitch, animated and startled, "
+        "{speaker} speaks Telugu with surprise, sudden raised pitch, animated and startled, "
         "expressive, moderate-fast pace, very clear high quality audio."
     ),
     "urgent": (
-        "Prakash speaks Telugu urgently, fast and insistent, serious, slightly raised pitch, "
+        "{speaker} speaks Telugu urgently, fast and insistent, serious, slightly raised pitch, "
         "close microphone, very high quality audio with almost no background noise."
     ),
     # --- formal / customer-care ---
     "formal": (
-        "Prakash speaks Telugu formally and politely, clear diction, measured moderate pace, "
+        "{speaker} speaks Telugu formally and politely, clear diction, measured moderate pace, "
         "professional customer-service tone, close microphone, very high quality audio."
     ),
     "polite": (
-        "Prakash speaks Telugu politely and respectfully, soft smile, careful wording pace, "
+        "{speaker} speaks Telugu politely and respectfully, soft smile, careful wording pace, "
         "warm but controlled, close-sounding recording, very high quality audio."
     ),
     "empathetic": (
-        "Prakash speaks Telugu empathetically, caring and reassuring, soft and warm, "
+        "{speaker} speaks Telugu empathetically, caring and reassuring, soft and warm, "
         "slightly slow pace, close microphone, very high quality audio."
     ),
     "news": (
-        "Prakash speaks Telugu like a news reader, clear, neutral, steady pace, "
+        "{speaker} speaks Telugu like a news reader, clear, neutral, steady pace, "
         "professional broadcast tone, very high quality studio audio."
-    ),
-    # --- female voice variants (Lalitha) ---
-    "happy_f": (
-        "Lalitha's voice is happy and smiling, speaking Telugu cheerfully with a slightly "
-        "higher pitch, warm and lively, moderate pace, close microphone, very high quality audio."
-    ),
-    "soft_f": (
-        "Lalitha speaks Telugu softly and gently, caring feminine voice, slow moderate pace, "
-        "close-sounding recording, very high quality audio with almost no background noise."
-    ),
-    "phone_f": (
-        "Lalitha speaks Telugu like a casual phone call, natural and slightly expressive, "
-        "thinking while talking, moderate pace, close microphone, very high quality audio."
-    ),
-    "joyful_f": (
-        "Lalitha speaks Telugu joyfully with a bright smiling tone, very expressive and "
-        "delighted, slightly fast pace, close microphone, very high quality audio."
     ),
 }
 
@@ -162,11 +155,23 @@ PARLER_STYLE_PACKS: dict[str, list[str]] = {
     "positive": ["happy", "joyful", "excited", "friendly", "playful"],
     "callcenter": ["formal", "polite", "empathetic", "phone", "calm"],
     "ab": ["backchannel", "happy", "joyful"],
-    "gender": ["happy", "happy_f", "soft", "soft_f"],
     "all": list(PARLER_STYLE_PRESETS.keys()),
 }
 
-DEFAULT_PARLER_DESC = PARLER_STYLE_PRESETS["backchannel"]
+
+def apply_voice(template: str, voice: str) -> str:
+    key = voice.strip().lower()
+    if key not in SPEAKERS:
+        raise SystemExit(f"Unknown --voice {voice!r}. Use: {', '.join(SPEAKERS)}")
+    speaker = SPEAKERS[key]
+    # Drop "feminine" wording when using male speaker so captions stay coherent.
+    text = template.format(speaker=speaker)
+    if speaker == "Prakash":
+        text = text.replace(" feminine voice", " voice").replace("feminine ", "")
+    return text
+
+
+DEFAULT_PARLER_DESC = apply_voice(PARLER_STYLE_PRESETS["backchannel"], "female")
 
 WANDB_FIX = """\
 IndicF5 failed because `wandb` is broken in this venv (common in venv-moshi).
@@ -443,6 +448,12 @@ def main() -> None:
         help="Exact transcript of --ref-audio (required for IndicF5).",
     )
     p.add_argument(
+        "--voice",
+        type=str,
+        default="female",
+        help="Telugu Parler speaker: female/girl (Lalitha, default) or male (Prakash).",
+    )
+    p.add_argument(
         "--list-styles",
         action="store_true",
         help="Print available Parler styles and packs, then exit.",
@@ -459,8 +470,9 @@ def main() -> None:
         default=None,
         help=(
             "Comma-separated styles and/or packs. "
-            "Packs: basic, emotions, positive, callcenter, ab, gender, all. "
-            "Example: backchannel,happy,joyful  or  emotions"
+            "Packs: basic, emotions, positive, callcenter, ab, all. "
+            "Example: backchannel,happy,joyful  or  emotions. "
+            "Voice: --voice female (Lalitha, default) or --voice male (Prakash)."
         ),
     )
     p.add_argument(
@@ -484,9 +496,10 @@ def main() -> None:
     args = p.parse_args()
 
     if args.list_styles:
+        print(f"Default voice: female (Lalitha). Use --voice male for Prakash.\n")
         print("Styles:")
         for name, desc in PARLER_STYLE_PRESETS.items():
-            print(f"  {name:12s}  {desc[:90]}…")
+            print(f"  {name:12s}  {apply_voice(desc, 'female')[:90]}…")
         print("\nPacks:")
         for name, members in PARLER_STYLE_PACKS.items():
             print(f"  {name:12s}  {','.join(members)}")
@@ -495,11 +508,17 @@ def main() -> None:
     texts = load_texts(args)
     print(f"{len(texts)} prompt(s)")
 
+    voice = args.voice.strip().lower()
+    speaker = SPEAKERS.get(voice)
+    if not speaker:
+        raise SystemExit(f"Unknown --voice {args.voice!r}. Use: {', '.join(SPEAKERS)}")
+    print(f"[Parler] voice={voice} → speaker={speaker}")
+
     if args.parler_desc:
         style_runs: list[tuple[str, str]] = [("custom", args.parler_desc)]
     else:
         styles = parse_styles(args.parler_styles, args.parler_style)
-        style_runs = [(s, PARLER_STYLE_PRESETS[s]) for s in styles]
+        style_runs = [(s, apply_voice(PARLER_STYLE_PRESETS[s], voice)) for s in styles]
 
     if args.models in ("both", "parler"):
         print(f"[Parler] styles: {[s for s, _ in style_runs]}")
@@ -557,6 +576,8 @@ def main() -> None:
                         "file": f"wav/{path.name}",
                         "model": "indic-parler-tts",
                         "style": style_tag,
+                        "voice": voice,
+                        "speaker": speaker,
                         "text": text,
                         "description": description,
                         "sr": sr,

@@ -59,23 +59,19 @@ cd ~/dataset   # or path to this repo on the GPU box
 # Default IndicF5 ref is repo-root audio.flac (auto-converted to 24 kHz wav).
 # --ref-text MUST be the exact words spoken in that file.
 
-# Emotion pack (happy/joyful/sad/angry/…) or pick any comma list:
+# Girl voice (Lalitha) is default (--voice female):
 python scripts/compare_te_tts.py \
   --models parler \
-  --parler-styles ab \
+  --voice female \
+  --parler-styles happy,joyful,sad,angry,excited \
   --text "హ్మ్, ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి." \
   --hf-repo BelluAi/te-tts-ab-listen
 
-# List every style + pack:
-python scripts/compare_te_tts.py --list-styles
-
-# Styles: clean phone backchannel listener happy joyful excited friendly playful
-#         calm soft whisper tired sad angry annoyed fear surprised urgent
-#         formal polite empathetic news happy_f soft_f phone_f joyful_f
-# Packs:  basic | emotions | positive | callcenter | ab | gender | all
+# Male: --voice male (Prakash). List styles: python scripts/compare_te_tts.py --list-styles
+# Packs: basic | emotions | positive | callcenter | ab | all
 ```
 
-Example: `--parler-styles happy,joyful,sad,angry` or `--parler-styles emotions` (bigger).
+Example: `--parler-styles emotions` or `--parler-styles happy,joyful`.
 
 If you see `ImportError: cannot import name 'Imports' from 'wandb.proto...'`:
 
