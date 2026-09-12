@@ -94,6 +94,26 @@ PersonaPlex-style pipeline: **local open-source** [`sarvamai/sarvam-30b`](https:
 
 Needs a GPU with enough VRAM for Sarvam-30B (MoE; use `--llm-load-in-4bit` if tight) plus Parler. Prefer the TTS/eval venv with `parler-tts` installed.
 
+**Sarvam-30B requires new transformers** (needs `ALL_ATTENTION_FUNCTIONS`):
+
+```bash
+pip install -U "transformers>=4.57.0" accelerate
+```
+
+If that breaks Parler, generate scripts first, then TTS from JSON:
+
+```bash
+# 1) scripts only (after upgrading transformers)
+python -m duplex_data.synthetic --out ./moshi_im_synth_te5 --num-dialogs 5 \
+  --domains recruitment,customer_support,banking --dry-run-scripts
+
+# 2) TTS+pack from saved scripts (older transformers OK if Parler needs it)
+python -m duplex_data.synthetic --out ./moshi_im_synth_te5 --num-dialogs 5 \
+  --scripts-dir ./moshi_im_synth_te5/scripts --hf-dataset BelluAi/dupxel-indic
+```
+
+Or skip 30B: `--llm-model sarvamai/sarvam-m`
+
 ```bash
 cd data && pip install -e ".[synthetic]"
 # also: pip install "git+https://github.com/huggingface/parler-tts.git"

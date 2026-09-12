@@ -46,6 +46,17 @@ class DialogueScript:
 _llm_bundle: dict[str, Any] = {}
 
 
+TRANSFORMERS_MIN_HINT = (
+    "sarvamai/sarvam-30b needs a newer `transformers` "
+    "(missing ALL_ATTENTION_FUNCTIONS).\n\n"
+    "In your TTS/eval venv run:\n"
+    '  pip install -U "transformers>=4.57.0" accelerate\n\n'
+    "Then retry. If Parler breaks after the upgrade, either:\n"
+    "  • use a separate LLM venv for --dry-run-scripts, then --scripts-dir for TTS, or\n"
+    "  • fall back: --llm-model sarvamai/sarvam-m\n"
+)
+
+
 def load_llm(
     model_id: str = DEFAULT_LLM,
     *,
@@ -58,9 +69,25 @@ def load_llm(
         return _llm_bundle[key]["tok"], _llm_bundle[key]["model"]
 
     import torch
+    import transformers
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    logger.info("Loading open-source LLM %s …", model_id)
+    # sarvam-30b remote code imports ALL_ATTENTION_FUNCTIONS (newer transformers)
+    if "sarvam-30b" in model_id.lower():
+        try:
+            from transformers.modeling_utils import ALL_ATTENTION_FUNCTIONS  # noqa: F401
+        except ImportError as exc:
+            raise SystemExit(
+                f"{TRANSFORMERS_MIN_HINT}\n"
+                f"Installed transformers=={getattr(transformers, '__version__', '?')}\n"
+                f"Underlying error: {exc}"
+            ) from exc
+
+    logger.info(
+        "Loading open-source LLM %s (transformers %s) …",
+        model_id,
+        getattr(transformers, "__version__", "?"),
+    )
     tok = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
     kwargs: dict[str, Any] = {"trust_remote_code": True, "device_map": "auto"}
     if load_in_4bit:
@@ -75,7 +102,14 @@ def load_llm(
     else:
         kwargs["torch_dtype"] = torch.bfloat16 if torch.cuda.is_available() else torch.float32
 
-    model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
+    try:
+        model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
+    except ImportError as exc:
+        if "ALL_ATTENTION_FUNCTIONS" in str(exc):
+            raise SystemExit(
+                f"{TRANSFORMERS_MIN_HINT}\nUnderlying error: {exc}"
+            ) from exc
+        raise
     model.eval()
     _llm_bundle[key] = {"tok": tok, "model": model}
     return tok, model

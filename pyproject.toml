@@ -19,7 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 indic = ["whisperx"]
-synthetic = ["faker", "bitsandbytes"]
+synthetic = ["faker", "bitsandbytes", "transformers>=4.57.0", "accelerate"]
 dev = ["pytest"]
 
 [project.scripts]
