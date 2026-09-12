@@ -24,17 +24,38 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_REF_AUDIO = REPO_ROOT / "audio.flac"
 
 DEFAULT_TE_TEXTS = [
+    "ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి.",
     "నమస్కారం, మీరు ఎలా ఉన్నారు?",
-    "అవును, సరే. నేను మీ ఖాతా వివరాలు చూస్తున్నాను.",
     "క్షమించండి, మళ్లీ చెప్పగలరా?",
-    "అవును అవును, అర్థమైంది.",
 ]
 
-# Telugu recommended speakers: Prakash, Lalitha (see indic-parler-tts card)
-DEFAULT_PARLER_DESC = (
-    "Prakash's voice is clear and slightly expressive, speaking Telugu at a "
-    "moderate pace with very high quality audio and almost no background noise."
-)
+# Telugu speakers: Prakash / Lalitha / Kiran (indic-parler-tts card).
+# Prosody + hesitation live in the *description*, not as fake words in Telugu text.
+PARLER_STYLE_PRESETS: dict[str, str] = {
+    "clean": (
+        "Prakash's voice is clear and slightly expressive, speaking Telugu at a "
+        "moderate pace with very high quality audio and almost no background noise."
+    ),
+    "phone": (
+        "Prakash speaks Telugu like a real phone call: casual, slightly expressive, "
+        "thinking while talking, with natural pauses and breath, moderate pace, "
+        "close microphone, very high quality audio, almost no background noise."
+    ),
+    "backchannel": (
+        "Prakash speaks Telugu in a very natural conversational phone style, "
+        "with human hesitations and filled pauses like uh, uhh, um, and okay, "
+        "soft backchannel acknowledgments, slight false starts, not reading a script, "
+        "warm and slightly expressive, moderate speed, close-sounding recording, "
+        "very clear high quality audio with almost no background noise."
+    ),
+    "listener": (
+        "Prakash gives short soft Telugu listener responses on a phone call, "
+        "with quick backchannels and filled pauses like uh-huh, uhh, mm, and okay, "
+        "brief and natural, not exaggerated, close microphone, very high quality audio."
+    ),
+}
+
+DEFAULT_PARLER_DESC = PARLER_STYLE_PRESETS["backchannel"]
 
 WANDB_FIX = """\
 IndicF5 failed because `wandb` is broken in this venv (common in venv-moshi).
@@ -270,11 +291,22 @@ def main() -> None:
         default=None,
         help="Exact transcript of --ref-audio (required for IndicF5).",
     )
-    p.add_argument("--parler-desc", type=str, default=DEFAULT_PARLER_DESC)
+    p.add_argument(
+        "--parler-style",
+        choices=list(PARLER_STYLE_PRESETS.keys()),
+        default="backchannel",
+        help="Parler caption preset (prosody / uh-uhh / phone). Overridden by --parler-desc.",
+    )
+    p.add_argument(
+        "--parler-desc",
+        type=str,
+        default=None,
+        help="Custom Parler style caption (overrides --parler-style).",
+    )
     p.add_argument(
         "--models",
         choices=["both", "indicf5", "parler"],
-        default="both",
+        default="parler",
     )
     p.add_argument("--hf-repo", type=str, default="BelluAi/te-tts-ab-listen")
     p.add_argument("--no-push", action="store_true")
@@ -287,6 +319,11 @@ def main() -> None:
 
     texts = load_texts(args)
     print(f"{len(texts)} prompt(s)")
+
+    parler_desc = args.parler_desc or PARLER_STYLE_PRESETS[args.parler_style]
+    if args.models in ("both", "parler"):
+        print(f"[Parler] style={args.parler_style if not args.parler_desc else 'custom'}")
+        print(f"[Parler] desc: {parler_desc[:120]}…")
 
     need_f5 = args.models in ("both", "indicf5")
     if need_f5:
@@ -308,7 +345,7 @@ def main() -> None:
         ref_wav = ensure_ref_wav(args.ref_audio, args.out / "prompts")
         meta.extend(gen_indicf5(texts, wav_dir, ref_wav, args.ref_text))
     if args.models in ("both", "parler"):
-        meta.extend(gen_parler(texts, wav_dir, args.parler_desc))
+        meta.extend(gen_parler(texts, wav_dir, parler_desc))
 
     write_bundle(args.out, meta)
 

@@ -59,16 +59,22 @@ cd ~/dataset   # or path to this repo on the GPU box
 # Default IndicF5 ref is repo-root audio.flac (auto-converted to 24 kHz wav).
 # --ref-text MUST be the exact words spoken in that file.
 
+# Recommended: Parler only + backchannel/prosody in the *description* (not Telugu text)
 python scripts/compare_te_tts.py \
-  --models both \
-  --text "నమస్కారం, మీరు ఎలా ఉన్నారు?" \
-  --text "క్షమించండి, మళ్లీ చెప్పగలరా?" \
-  --ref-text "EXACT_TRANSCRIPT_OF_audio.flac" \
+  --models parler \
+  --parler-style backchannel \
+  --text "ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి." \
   --hf-repo BelluAi/te-tts-ab-listen
 
-# Parler only (no ref):
-python scripts/compare_te_tts.py --models parler --text "నమస్కారం" --hf-repo BelluAi/te-tts-ab-listen
+# Styles: clean | phone | backchannel | listener
+# Or custom caption:
+python scripts/compare_te_tts.py --models parler --parler-style phone \
+  --parler-desc "Prakash speaks Telugu casually with uh, uhh, okay hesitations, phone call, very high quality audio." \
+  --text "ఓకే, ఇది నా కాంటాక్ట్ నెంబరు." \
+  --hf-repo BelluAi/te-tts-ab-listen
 ```
+
+Keep Telugu `--text` mostly clean. Drive “human” feel with `--parler-style backchannel` (uh / uhh / okay in the English caption). Stuffing `హ్మ్` into the Telugu line usually makes the model *read* the word, not grunt.
 
 If you see `ImportError: cannot import name 'Imports' from 'wandb.proto...'`:
 
