@@ -59,22 +59,23 @@ cd ~/dataset   # or path to this repo on the GPU box
 # Default IndicF5 ref is repo-root audio.flac (auto-converted to 24 kHz wav).
 # --ref-text MUST be the exact words spoken in that file.
 
-# Recommended: Parler only + backchannel/prosody in the *description* (not Telugu text)
+# Emotion pack (happy/joyful/sad/angry/…) or pick any comma list:
 python scripts/compare_te_tts.py \
   --models parler \
-  --parler-style backchannel \
-  --text "ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి." \
+  --parler-styles ab \
+  --text "హ్మ్, ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి." \
   --hf-repo BelluAi/te-tts-ab-listen
 
-# Styles: clean | phone | backchannel | listener
-# Or custom caption:
-python scripts/compare_te_tts.py --models parler --parler-style phone \
-  --parler-desc "Prakash speaks Telugu casually with uh, uhh, okay hesitations, phone call, very high quality audio." \
-  --text "ఓకే, ఇది నా కాంటాక్ట్ నెంబరు." \
-  --hf-repo BelluAi/te-tts-ab-listen
+# List every style + pack:
+python scripts/compare_te_tts.py --list-styles
+
+# Styles: clean phone backchannel listener happy joyful excited friendly playful
+#         calm soft whisper tired sad angry annoyed fear surprised urgent
+#         formal polite empathetic news happy_f soft_f phone_f joyful_f
+# Packs:  basic | emotions | positive | callcenter | ab | gender | all
 ```
 
-Keep Telugu `--text` mostly clean. Drive “human” feel with `--parler-style backchannel` (uh / uhh / okay in the English caption). Stuffing `హ్మ్` into the Telugu line usually makes the model *read* the word, not grunt.
+Example: `--parler-styles happy,joyful,sad,angry` or `--parler-styles emotions` (bigger).
 
 If you see `ImportError: cannot import name 'Imports' from 'wandb.proto...'`:
 
@@ -82,7 +83,7 @@ If you see `ImportError: cannot import name 'Imports' from 'wandb.proto...'`:
 pip install --force-reinstall --no-cache-dir "wandb>=0.19"
 ```
 
-Outputs `te_tts_ab/wav/{000_indicf5,000_parler}.wav` + `manifest.jsonl`, then uploads (private by default). Listen on the Hub **Files** tab.
+Uploads private Hub dataset by default. Listen on the Hub **Files** tab.
 
 ## Output (moshi train consumes this)
 

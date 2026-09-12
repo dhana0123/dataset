@@ -30,8 +30,9 @@ DEFAULT_TE_TEXTS = [
 ]
 
 # Telugu speakers: Prakash / Lalitha / Kiran (indic-parler-tts card).
-# Prosody + hesitation live in the *description*, not as fake words in Telugu text.
+# Prosody lives in the *description*. Use --parler-styles a,b,c for A/B.
 PARLER_STYLE_PRESETS: dict[str, str] = {
+    # --- baseline / channel ---
     "clean": (
         "Prakash's voice is clear and slightly expressive, speaking Telugu at a "
         "moderate pace with very high quality audio and almost no background noise."
@@ -53,6 +54,116 @@ PARLER_STYLE_PRESETS: dict[str, str] = {
         "with quick backchannels and filled pauses like uh-huh, uhh, mm, and okay, "
         "brief and natural, not exaggerated, close microphone, very high quality audio."
     ),
+    # --- positive ---
+    "happy": (
+        "Prakash speaks Telugu in a happy, upbeat, smiling voice, cheerful and warm, "
+        "slightly higher pitch, lively and positive energy, moderate pace, "
+        "close microphone, very high quality audio with almost no background noise."
+    ),
+    "joyful": (
+        "Prakash speaks Telugu with a joyful, bright, laughing-smile tone, "
+        "very expressive and energetic, delighted and friendly, slightly fast pace, "
+        "close-sounding recording, very clear high quality audio with almost no background noise."
+    ),
+    "excited": (
+        "Prakash speaks Telugu excitedly, high energy, fast pace, elevated pitch, "
+        "enthusiastic and animated, close microphone, very high quality audio."
+    ),
+    "friendly": (
+        "Prakash speaks Telugu in a warm, friendly, welcoming tone, soft smile in the voice, "
+        "relaxed moderate pace, close-sounding recording, very high quality audio."
+    ),
+    "playful": (
+        "Prakash speaks Telugu playfully, light teasing smile, slightly higher pitch, "
+        "bouncy and informal, moderate pace, very clear high quality audio."
+    ),
+    # --- calm / soft ---
+    "calm": (
+        "Prakash speaks Telugu calmly and steadily, soothing, low expressivity, "
+        "slightly slow pace, balanced pitch, close microphone, very high quality audio."
+    ),
+    "soft": (
+        "Prakash speaks Telugu softly and gently, quiet close-up voice, caring tone, "
+        "slow to moderate pace, very clear audio with almost no background noise."
+    ),
+    "whisper": (
+        "Prakash whispers Telugu quietly and intimately, breathy soft voice, "
+        "very close microphone, slow pace, clear recording with almost no noise."
+    ),
+    "tired": (
+        "Prakash speaks Telugu in a tired, weary voice, slightly lower pitch, "
+        "slower pace, soft and drained, close microphone, very high quality audio."
+    ),
+    # --- negative / intense ---
+    "sad": (
+        "Prakash speaks Telugu sadly, low pitch, slow pace, soft and melancholic, "
+        "slightly monotone with quiet emotion, close recording, very high quality audio."
+    ),
+    "angry": (
+        "Prakash speaks Telugu angrily, sharp and forceful, higher intensity, "
+        "faster pace, tense pitch, close microphone, very high quality audio."
+    ),
+    "annoyed": (
+        "Prakash speaks Telugu in an annoyed, impatient tone, clipped and irritated, "
+        "slightly fast pace, close-sounding recording, very high quality audio."
+    ),
+    "fear": (
+        "Prakash speaks Telugu with fear and anxiety, shaky, hesitant, slightly higher pitch, "
+        "uneven pace, close microphone, very high quality audio."
+    ),
+    "surprised": (
+        "Prakash speaks Telugu with surprise, sudden raised pitch, animated and startled, "
+        "expressive, moderate-fast pace, very clear high quality audio."
+    ),
+    "urgent": (
+        "Prakash speaks Telugu urgently, fast and insistent, serious, slightly raised pitch, "
+        "close microphone, very high quality audio with almost no background noise."
+    ),
+    # --- formal / customer-care ---
+    "formal": (
+        "Prakash speaks Telugu formally and politely, clear diction, measured moderate pace, "
+        "professional customer-service tone, close microphone, very high quality audio."
+    ),
+    "polite": (
+        "Prakash speaks Telugu politely and respectfully, soft smile, careful wording pace, "
+        "warm but controlled, close-sounding recording, very high quality audio."
+    ),
+    "empathetic": (
+        "Prakash speaks Telugu empathetically, caring and reassuring, soft and warm, "
+        "slightly slow pace, close microphone, very high quality audio."
+    ),
+    "news": (
+        "Prakash speaks Telugu like a news reader, clear, neutral, steady pace, "
+        "professional broadcast tone, very high quality studio audio."
+    ),
+    # --- female voice variants (Lalitha) ---
+    "happy_f": (
+        "Lalitha's voice is happy and smiling, speaking Telugu cheerfully with a slightly "
+        "higher pitch, warm and lively, moderate pace, close microphone, very high quality audio."
+    ),
+    "soft_f": (
+        "Lalitha speaks Telugu softly and gently, caring feminine voice, slow moderate pace, "
+        "close-sounding recording, very high quality audio with almost no background noise."
+    ),
+    "phone_f": (
+        "Lalitha speaks Telugu like a casual phone call, natural and slightly expressive, "
+        "thinking while talking, moderate pace, close microphone, very high quality audio."
+    ),
+    "joyful_f": (
+        "Lalitha speaks Telugu joyfully with a bright smiling tone, very expressive and "
+        "delighted, slightly fast pace, close microphone, very high quality audio."
+    ),
+}
+
+# Named packs for --parler-styles (aliases expand before lookup).
+PARLER_STYLE_PACKS: dict[str, list[str]] = {
+    "basic": ["clean", "phone", "backchannel"],
+    "emotions": ["happy", "joyful", "sad", "angry", "surprised", "fear", "calm"],
+    "positive": ["happy", "joyful", "excited", "friendly", "playful"],
+    "callcenter": ["formal", "polite", "empathetic", "phone", "calm"],
+    "ab": ["backchannel", "happy", "joyful"],
+    "gender": ["happy", "happy_f", "soft", "soft_f"],
+    "all": list(PARLER_STYLE_PRESETS.keys()),
 }
 
 DEFAULT_PARLER_DESC = PARLER_STYLE_PRESETS["backchannel"]
@@ -96,9 +207,9 @@ Side-by-side samples from **IndicF5** and **Indic Parler-TTS** for the same Telu
 
 ## Layout
 
-- `wav/NNN_indicf5.wav` — IndicF5
-- `wav/NNN_parler.wav` — Indic Parler-TTS
-- `manifest.jsonl` — text, model, duration, sr
+- `wav/NNN_parler_<style>.wav` — same text, different Parler styles (e.g. backchannel, happy, joyful)
+- `wav/NNN_indicf5.wav` — IndicF5 (optional)
+- `manifest.jsonl` — text, model, style, duration, sr
 
 Open any `.wav` in the Hub file browser to listen.
 """
@@ -106,6 +217,40 @@ Open any `.wav` in the Hub file browser to listen.
 
 def _slug(i: int, model: str) -> str:
     return f"{i:03d}_{model}"
+
+
+def parse_styles(raw: str | None, single: str | None) -> list[str]:
+    """Comma-separated --parler-styles (or packs), or one --parler-style."""
+    if raw:
+        tokens = [s.strip() for s in raw.split(",") if s.strip()]
+    elif single:
+        tokens = [single]
+    else:
+        tokens = ["backchannel"]
+
+    styles: list[str] = []
+    for tok in tokens:
+        if tok in PARLER_STYLE_PACKS:
+            styles.extend(PARLER_STYLE_PACKS[tok])
+        else:
+            styles.append(tok)
+
+    # preserve order, drop dupes
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for s in styles:
+        if s not in seen:
+            seen.add(s)
+            ordered.append(s)
+
+    unknown = [s for s in ordered if s not in PARLER_STYLE_PRESETS]
+    if unknown:
+        raise SystemExit(
+            f"Unknown parler style(s): {unknown}.\n"
+            f"Styles: {', '.join(PARLER_STYLE_PRESETS)}\n"
+            f"Packs: {', '.join(PARLER_STYLE_PACKS)}"
+        )
+    return ordered
 
 
 def load_texts(args: argparse.Namespace) -> list[str]:
@@ -198,14 +343,19 @@ def gen_indicf5(
     return rows
 
 
-def gen_parler(texts: list[str], out_dir: Path, description: str) -> list[dict]:
+def gen_parler(
+    texts: list[str],
+    out_dir: Path,
+    description: str,
+    style_tag: str = "parler",
+) -> list[dict]:
     import torch
     from parler_tts import ParlerTTSForConditionalGeneration
     from transformers import AutoTokenizer
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     repo = "ai4bharat/indic-parler-tts"
-    print(f"[Parler] loading {repo} on {device} …")
+    print(f"[Parler/{style_tag}] loading {repo} on {device} …")
     model = ParlerTTSForConditionalGeneration.from_pretrained(repo).to(device)
     tok = AutoTokenizer.from_pretrained(repo)
     desc_tok = AutoTokenizer.from_pretrained(model.config.text_encoder._name_or_path)
@@ -213,7 +363,7 @@ def gen_parler(texts: list[str], out_dir: Path, description: str) -> list[dict]:
 
     rows: list[dict] = []
     for i, text in enumerate(texts):
-        print(f"[Parler] {i + 1}/{len(texts)}: {text[:80]}")
+        print(f"[Parler/{style_tag}] {i + 1}/{len(texts)}: {text[:80]}")
         prompt = tok(text, return_tensors="pt").to(device)
         gen = model.generate(
             input_ids=desc.input_ids,
@@ -223,12 +373,13 @@ def gen_parler(texts: list[str], out_dir: Path, description: str) -> list[dict]:
         )
         audio = gen.cpu().numpy().squeeze().astype(np.float32)
         sr = int(model.config.sampling_rate)
-        path = out_dir / f"{_slug(i, 'parler')}.wav"
+        path = out_dir / f"{_slug(i, f'parler_{style_tag}')}.wav"
         sf.write(path, audio, sr)
         rows.append(
             {
                 "file": f"wav/{path.name}",
                 "model": "indic-parler-tts",
+                "style": style_tag,
                 "text": text,
                 "description": description,
                 "sr": sr,
@@ -292,16 +443,31 @@ def main() -> None:
         help="Exact transcript of --ref-audio (required for IndicF5).",
     )
     p.add_argument(
+        "--list-styles",
+        action="store_true",
+        help="Print available Parler styles and packs, then exit.",
+    )
+    p.add_argument(
         "--parler-style",
         choices=list(PARLER_STYLE_PRESETS.keys()),
-        default="backchannel",
-        help="Parler caption preset (prosody / uh-uhh / phone). Overridden by --parler-desc.",
+        default=None,
+        help="Single Parler caption preset. Prefer --parler-styles for A/B.",
+    )
+    p.add_argument(
+        "--parler-styles",
+        type=str,
+        default=None,
+        help=(
+            "Comma-separated styles and/or packs. "
+            "Packs: basic, emotions, positive, callcenter, ab, gender, all. "
+            "Example: backchannel,happy,joyful  or  emotions"
+        ),
     )
     p.add_argument(
         "--parler-desc",
         type=str,
         default=None,
-        help="Custom Parler style caption (overrides --parler-style).",
+        help="Custom Parler style caption (forces a single 'custom' run; ignores presets).",
     )
     p.add_argument(
         "--models",
@@ -317,13 +483,26 @@ def main() -> None:
     )
     args = p.parse_args()
 
+    if args.list_styles:
+        print("Styles:")
+        for name, desc in PARLER_STYLE_PRESETS.items():
+            print(f"  {name:12s}  {desc[:90]}…")
+        print("\nPacks:")
+        for name, members in PARLER_STYLE_PACKS.items():
+            print(f"  {name:12s}  {','.join(members)}")
+        return
+
     texts = load_texts(args)
     print(f"{len(texts)} prompt(s)")
 
-    parler_desc = args.parler_desc or PARLER_STYLE_PRESETS[args.parler_style]
+    if args.parler_desc:
+        style_runs: list[tuple[str, str]] = [("custom", args.parler_desc)]
+    else:
+        styles = parse_styles(args.parler_styles, args.parler_style)
+        style_runs = [(s, PARLER_STYLE_PRESETS[s]) for s in styles]
+
     if args.models in ("both", "parler"):
-        print(f"[Parler] style={args.parler_style if not args.parler_desc else 'custom'}")
-        print(f"[Parler] desc: {parler_desc[:120]}…")
+        print(f"[Parler] styles: {[s for s, _ in style_runs]}")
 
     need_f5 = args.models in ("both", "indicf5")
     if need_f5:
@@ -345,7 +524,46 @@ def main() -> None:
         ref_wav = ensure_ref_wav(args.ref_audio, args.out / "prompts")
         meta.extend(gen_indicf5(texts, wav_dir, ref_wav, args.ref_text))
     if args.models in ("both", "parler"):
-        meta.extend(gen_parler(texts, wav_dir, parler_desc))
+        # Load once if multiple styles (reuse weights across captions)
+        import torch
+        from parler_tts import ParlerTTSForConditionalGeneration
+        from transformers import AutoTokenizer
+
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        repo = "ai4bharat/indic-parler-tts"
+        print(f"[Parler] loading {repo} once on {device} …")
+        model = ParlerTTSForConditionalGeneration.from_pretrained(repo).to(device)
+        tok = AutoTokenizer.from_pretrained(repo)
+        desc_tok = AutoTokenizer.from_pretrained(model.config.text_encoder._name_or_path)
+
+        for style_tag, description in style_runs:
+            print(f"[Parler/{style_tag}] {description[:100]}…")
+            desc = desc_tok(description, return_tensors="pt").to(device)
+            for i, text in enumerate(texts):
+                print(f"[Parler/{style_tag}] {i + 1}/{len(texts)}: {text[:80]}")
+                prompt = tok(text, return_tensors="pt").to(device)
+                gen = model.generate(
+                    input_ids=desc.input_ids,
+                    attention_mask=desc.attention_mask,
+                    prompt_input_ids=prompt.input_ids,
+                    prompt_attention_mask=prompt.attention_mask,
+                )
+                audio = gen.cpu().numpy().squeeze().astype(np.float32)
+                sr = int(model.config.sampling_rate)
+                path = wav_dir / f"{_slug(i, f'parler_{style_tag}')}.wav"
+                sf.write(path, audio, sr)
+                meta.append(
+                    {
+                        "file": f"wav/{path.name}",
+                        "model": "indic-parler-tts",
+                        "style": style_tag,
+                        "text": text,
+                        "description": description,
+                        "sr": sr,
+                        "duration_s": round(float(len(audio)) / float(sr), 3),
+                    }
+                )
+        del model
 
     write_bundle(args.out, meta)
 
@@ -355,7 +573,7 @@ def main() -> None:
 
     url = push_hf(args.out, args.hf_repo, private=not args.public)
     print(f"Uploaded: {url}")
-    print("Open Files → wav/ and play each pair (same index = same text).")
+    print("Open Files → wav/ and compare same index across styles.")
 
 
 if __name__ == "__main__":
