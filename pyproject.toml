@@ -1,0 +1,33 @@
+[project]
+name = "duplex-data"
+version = "0.1.0"
+description = "Indic Inner Monologue dataset packer (standalone from moshi)"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "datasets>=4.4.0",
+    "pyarrow>=21.0.0",
+    "huggingface-hub>=0.24,<1.0",
+    "soundfile>=0.12",
+    "scipy>=1.11",
+    "pandas>=2.0",
+    "pyannote.audio>=4.0",
+    "transformers>=4.48",
+    "openai-whisper",
+    "nltk",
+]
+
+[project.optional-dependencies]
+indic = ["whisperx"]
+dev = ["pytest"]
+
+[project.scripts]
+duplex-prepare = "duplex_data.prepare:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["duplex_data*"]

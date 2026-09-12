@@ -1,0 +1,11 @@
+# Indic IM packer. From data/: pip install -e .
+datasets>=4.4.0
+pyarrow>=21.0.0
+huggingface-hub>=0.24,<1.0
+soundfile>=0.12
+scipy>=1.11
+pandas>=2.0
+pyannote.audio>=4.0
+transformers>=4.48
+openai-whisper
+nltk
