@@ -19,10 +19,12 @@ dependencies = [
 
 [project.optional-dependencies]
 indic = ["whisperx"]
+synthetic = ["faker", "bitsandbytes"]
 dev = ["pytest"]
 
 [project.scripts]
 duplex-prepare = "duplex_data.prepare:main"
+duplex-synthetic = "duplex_data.synthetic:main"
 
 [build-system]
 requires = ["setuptools>=61"]

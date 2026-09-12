@@ -88,6 +88,44 @@ pip install --force-reinstall --no-cache-dir "wandb>=0.19"
 
 Uploads private Hub dataset by default. Listen on the Hub **Files** tab.
 
+## Synthetic duplex (open Sarvam-M → Parler → IM pack)
+
+PersonaPlex-style pipeline: **local open-source** [`sarvamai/sarvam-30b`](https://huggingface.co/sarvamai/sarvam-30b) (default; strong Indic Te/Hi/Ta/Kn) writes two-speaker Telugu scripts → Indic Parler TTS → stereo stitch → same `wav/` + `SPEAKER_MAIN` JSON + `train.jsonl` as the packer. **No Sarvam API key.** Fallback mid-size: `--llm-model sarvamai/sarvam-m`.
+
+Needs a GPU with enough VRAM for Sarvam-30B (MoE; use `--llm-load-in-4bit` if tight) plus Parler. Prefer the TTS/eval venv with `parler-tts` installed.
+
+```bash
+cd data && pip install -e ".[synthetic]"
+# also: pip install "git+https://github.com/huggingface/parler-tts.git"
+
+export HF_TOKEN=...   # download weights + optional Hub push
+
+# Placeholder scripts only (no LLM):
+python -m duplex_data.synthetic \
+  --out ./moshi_im_synth_smoke \
+  --lang te \
+  --num-dialogs 2 \
+  --domains recruitment,customer_support \
+  --dry-run-scripts --skip-llm
+
+# Full: Sarvam-30B scripts + Parler audio + pack (+ Hub):
+python -m duplex_data.synthetic \
+  --out ./moshi_im_synth_te \
+  --lang te \
+  --llm-model sarvamai/sarvam-30b \
+  --num-dialogs 5 \
+  --domains recruitment,customer_support,banking \
+  --agent-style leela \
+  --user-voice male \
+  --device cuda \
+  --hf-dataset BelluAi/dupxel-indic
+
+# List domains:
+python -m duplex_data.synthetic --out /tmp/x --list-domains
+```
+
+Reuse scripts later: `--scripts-dir ./moshi_im_synth_te/scripts` (skips LLM).
+
 ## Output (moshi train consumes this)
 
 - `wav/*.wav` — 24 kHz stereo (L=agent, R=user)
