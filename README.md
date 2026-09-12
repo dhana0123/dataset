@@ -67,11 +67,18 @@ python scripts/compare_te_tts.py \
   --text "హ్మ్, ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి." \
   --hf-repo BelluAi/te-tts-ab-listen
 
+# Leela (high-pitched, fast, cheerful — Parler example caption):
+python scripts/compare_te_tts.py \
+  --models parler \
+  --parler-styles leela,happy,joyful \
+  --text "హ్మ్, ఓకే, ఇది నా కాంటాక్ట్ నెంబరు. మీరు అడ్రెస్ చెప్తే నేను అక్కడికి వస్తాను. అక్కడ ఒక ఓటిపి ఆర్డర్ చేయండి." \
+  --hf-repo BelluAi/te-tts-ab-listen
+
 # Male: --voice male (Prakash). List styles: python scripts/compare_te_tts.py --list-styles
 # Packs: basic | emotions | positive | callcenter | ab | all
 ```
 
-Example: `--parler-styles emotions` or `--parler-styles happy,joyful`.
+Example: `--parler-styles leela` or `--parler-styles emotions`.
 
 If you see `ImportError: cannot import name 'Imports' from 'wandb.proto...'`:
 

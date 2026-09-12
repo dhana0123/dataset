@@ -38,6 +38,9 @@ SPEAKERS = {
     "woman": "Lalitha",
     "boy": "Prakash",
     "man": "Prakash",
+    "leela": "Leela",
+    "lalitha": "Lalitha",
+    "prakash": "Prakash",
 }
 
 # Style templates use {speaker}; filled by apply_voice().
@@ -146,15 +149,24 @@ PARLER_STYLE_PRESETS: dict[str, str] = {
         "{speaker} speaks Telugu like a news reader, clear, neutral, steady pace, "
         "professional broadcast tone, very high quality studio audio."
     ),
+    # Leela — warm + fast (Indic Parler named speaker)
+    "leela": (
+        "Leela speaks Telugu in a warm, cheerful tone at a fast pace, high-pitched and "
+        "full of energy and happiness. The recording is very high quality with no background noise."
+    ),
+    "cheerful": (
+        "Leela speaks Telugu in a warm, cheerful tone at a fast pace, high-pitched and "
+        "full of energy and happiness. The recording is very high quality with no background noise."
+    ),
 }
 
 # Named packs for --parler-styles (aliases expand before lookup).
 PARLER_STYLE_PACKS: dict[str, list[str]] = {
     "basic": ["clean", "phone", "backchannel"],
     "emotions": ["happy", "joyful", "sad", "angry", "surprised", "fear", "calm"],
-    "positive": ["happy", "joyful", "excited", "friendly", "playful"],
+    "positive": ["happy", "joyful", "excited", "friendly", "playful", "leela"],
     "callcenter": ["formal", "polite", "empathetic", "phone", "calm"],
-    "ab": ["backchannel", "happy", "joyful"],
+    "ab": ["backchannel", "happy", "joyful", "leela"],
     "all": list(PARLER_STYLE_PRESETS.keys()),
 }
 
@@ -163,8 +175,10 @@ def apply_voice(template: str, voice: str) -> str:
     key = voice.strip().lower()
     if key not in SPEAKERS:
         raise SystemExit(f"Unknown --voice {voice!r}. Use: {', '.join(SPEAKERS)}")
+    # Fixed named captions (no {speaker} placeholder) — use as-is
+    if "{speaker}" not in template:
+        return template
     speaker = SPEAKERS[key]
-    # Drop "feminine" wording when using male speaker so captions stay coherent.
     text = template.format(speaker=speaker)
     if speaker == "Prakash":
         text = text.replace(" feminine voice", " voice").replace("feminine ", "")
