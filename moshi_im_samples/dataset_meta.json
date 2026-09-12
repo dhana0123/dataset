@@ -1,0 +1,14 @@
+{
+  "sample_rate": 24000,
+  "mimi_frame_rate_hz": 12.5,
+  "text_delay_sec": 0.16,
+  "streams": 17,
+  "layout": [
+    "W_agent_text",
+    "A_agent_8",
+    "A_user_8"
+  ],
+  "control_tokens": false,
+  "synthetic_tones": true,
+  "n_clips": 3
+}
