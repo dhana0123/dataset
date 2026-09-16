@@ -153,3 +153,48 @@ Reuse scripts later: `--scripts-dir ./moshi_im_synth_te/scripts` (skips LLM).
 - `wav/*.json` — agent word times + `extraction` labels
 - `train.jsonl` — `{path, duration, extraction?}`
 - `dataset_meta.json`
+
+## Speech-event plans (research annotation)
+
+Separate from the IM packer: extract overlapping speech-control **events**
+(content / pitch / energy / rate / emphasis / pause / boundary) into a 2D
+temporal JSON, then annotate global state (and edit auto events) in a local UI.
+
+```bash
+cd data
+pip install -e ".[speech-plan]"
+
+# 1) Audio → draft speech_plan.json (+ copied wav)
+python -m duplex_data.speech_plan.extract path/to/clip.wav \
+  --out ./speech_plans --lang auto --asr-backend whisper --device cpu
+
+# Or a folder of clips:
+python -m duplex_data.speech_plan.extract path/to/wav_dir \
+  --out ./speech_plans --lang te --asr-backend whisper --device cuda
+
+# 2) Annotate (global state, emphasis, boundaries, edit spans)
+python -m duplex_data.speech_plan.annotator --root ./speech_plans
+# open http://127.0.0.1:8765
+```
+
+**Auto vs human**
+
+| Lane / field | Source |
+| --- | --- |
+| CONTENT + word times | ASR (Whisper word timestamps, or IndicConformer + WhisperX) |
+| PAUSE / PITCH / ENERGY / RATE | Auto from timing + Praat (parselmouth) / librosa |
+| EMPHASIS / BOUNDARY | Weak auto-propose; confirm in UI |
+| NONVERBAL | Always `[]` |
+| GLOBAL STATE | Human (calm / serious / excited / reassuring / …) |
+
+Each clip folder under `--out` looks like:
+
+```text
+speech_plans/<stem>/
+  <stem>.wav
+  speech_plan.json   # lanes + optional acoustic tracks sidecar
+```
+
+Events are overlapping **lanes**, not one serialized chain. Raw F0/intensity
+stay under `tracks` for analysis; the annotation target is the discrete
+`EVENT(type, start, end, value, source)` vocabulary.

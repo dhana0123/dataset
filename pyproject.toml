@@ -20,11 +20,20 @@ dependencies = [
 [project.optional-dependencies]
 indic = ["whisperx"]
 synthetic = ["faker", "bitsandbytes", "transformers>=4.57.0", "accelerate"]
+speech-plan = [
+    "praat-parselmouth",
+    "librosa",
+    "fastapi",
+    "uvicorn",
+    "whisperx",
+]
 dev = ["pytest"]
 
 [project.scripts]
 duplex-prepare = "duplex_data.prepare:main"
 duplex-synthetic = "duplex_data.synthetic:main"
+duplex-speech-extract = "duplex_data.speech_plan.extract:main"
+duplex-speech-annotate = "duplex_data.speech_plan.annotator:main"
 
 [build-system]
 requires = ["setuptools>=61"]
@@ -33,3 +42,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["duplex_data*"]
+
+[tool.setuptools.package-data]
+"duplex_data" = ["speech_plan/static/*"]

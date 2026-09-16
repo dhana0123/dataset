@@ -1,4 +1,5 @@
 # Indic IM packer. From data/: pip install -e .
+# Speech-plan extract + annotator: pip install -e ".[speech-plan]"
 datasets>=4.4.0
 pyarrow>=21.0.0
 huggingface-hub>=0.24,<1.0

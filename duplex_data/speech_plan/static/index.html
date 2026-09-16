@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Speech Plan Annotator</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <h1>Speech Plans</h1>
+      <p class="hint" id="root-label"></p>
+      <ul id="clip-list"></ul>
+    </aside>
+    <main id="main">
+      <header id="toolbar">
+        <button id="btn-play" type="button">Play</button>
+        <span id="time-label">0.00 / 0.00</span>
+        <label>
+          Global state
+          <select id="global-state">
+            <option value="">— unset —</option>
+          </select>
+        </label>
+        <button id="btn-save" type="button" class="primary">Save</button>
+        <span id="status"></span>
+      </header>
+
+      <section id="waveform-wrap">
+        <div id="waveform"></div>
+      </section>
+
+      <section id="lanes"></section>
+
+      <section id="editor" class="hidden">
+        <h2>Edit event</h2>
+        <div class="editor-row">
+          <label>Lane <input id="ed-lane" readonly /></label>
+          <label>Type <input id="ed-type" /></label>
+          <label>Value
+            <select id="ed-value"></select>
+            <input id="ed-value-text" class="hidden" />
+          </label>
+          <label>Start <input id="ed-start" type="number" step="0.01" /></label>
+          <label>End <input id="ed-end" type="number" step="0.01" /></label>
+        </div>
+        <div class="editor-row">
+          <button id="btn-apply" type="button">Apply</button>
+          <button id="btn-delete" type="button" class="danger">Delete</button>
+          <button id="btn-cancel-edit" type="button">Cancel</button>
+        </div>
+      </section>
+
+      <p class="hint">
+        Space = play/pause · N = next clip · Drag on a lane to add a span ·
+        Click a span to edit · Nonverbal is locked empty
+      </p>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
