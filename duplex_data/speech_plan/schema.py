@@ -1,7 +1,9 @@
 """SpeechPlan / Event JSON schema (research, not frozen).
 
 Lanes overlap in time — not a single serialized event chain.
-NONVERBAL is always empty in v1; GLOBAL STATE is clip-level human label.
+NONVERBAL uses the packaged event vocabulary (human-annotated).
+Indic nonverbal values are native-script transcripts (e.g. हम्म, హ్మ్).
+GLOBAL STATE is clip-level human label.
 """
 
 from __future__ import annotations
@@ -10,6 +12,8 @@ import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Literal
+
+from duplex_data.speech_plan.vocab import list_nonverbal_event_ids
 
 EventSource = Literal["asr", "auto", "human"]
 LaneKey = Literal[
@@ -51,6 +55,13 @@ ENERGY_VALUES = ("softer", "stronger")
 RATE_VALUES = ("faster", "slower")
 EMPHASIS_VALUES = ("strong", "weak")
 BOUNDARY_VALUES = ("continuing", "completing", "questioning")
+
+
+def nonverbal_values() -> tuple[str, ...]:
+    return list_nonverbal_event_ids()
+
+
+NONVERBAL_VALUES: tuple[str, ...] = list_nonverbal_event_ids()
 
 
 @dataclass
@@ -108,22 +119,27 @@ class SpeechPlan:
     asr: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        # Ensure all lane keys exist; nonverbal lane + top-level list stay empty in v1.
         for key in LANE_KEYS:
             self.lanes.setdefault(key, [])
-        self.nonverbal = []
-        self.lanes["nonverbal"] = []
+        if self.lanes.get("nonverbal"):
+            self.nonverbal = [
+                e.to_dict() if isinstance(e, Event) else e for e in self.lanes["nonverbal"]
+            ]
+        elif self.nonverbal:
+            self.lanes["nonverbal"] = [
+                e if isinstance(e, Event) else Event.from_dict(e) for e in self.nonverbal
+            ]
 
     def to_dict(self) -> dict[str, Any]:
+        nonverbal_events = [e.to_dict() for e in self.lanes.get("nonverbal", [])]
         return {
             "audio_path": self.audio_path,
             "duration": self.duration,
             "language": self.language,
             "global_state": self.global_state.to_dict(),
-            "nonverbal": [],
+            "nonverbal": nonverbal_events,
             "lanes": {
-                k: [e.to_dict() for e in self.lanes.get(k, [])]
-                for k in LANE_KEYS
+                k: [e.to_dict() for e in self.lanes.get(k, [])] for k in LANE_KEYS
             },
             "tracks": self.tracks,
             "asr": self.asr,
@@ -135,12 +151,16 @@ class SpeechPlan:
         lanes: dict[str, list[Event]] = {}
         for key in LANE_KEYS:
             lanes[key] = [Event.from_dict(e) for e in lanes_raw.get(key, [])]
+        if not lanes.get("nonverbal") and d.get("nonverbal"):
+            lanes["nonverbal"] = [
+                e if isinstance(e, Event) else Event.from_dict(e) for e in d["nonverbal"]
+            ]
         return cls(
             audio_path=str(d["audio_path"]),
             duration=float(d["duration"]),
             language=str(d.get("language", "auto")),
             global_state=GlobalState.from_dict(d.get("global_state")),
-            nonverbal=[],
+            nonverbal=list(d.get("nonverbal") or []),
             lanes=lanes,
             tracks=dict(d.get("tracks") or {}),
             asr=dict(d.get("asr") or {}),
@@ -149,7 +169,10 @@ class SpeechPlan:
     def save(self, path: str | Path) -> None:
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(self.to_dict(), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        path.write_text(
+            json.dumps(self.to_dict(), indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
 
     @classmethod
     def load(cls, path: str | Path) -> SpeechPlan:

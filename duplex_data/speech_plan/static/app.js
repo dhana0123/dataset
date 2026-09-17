@@ -29,6 +29,7 @@ const DEFAULT_VALUE = {
   emphasis: "strong",
   pause: 200,
   boundary: "completing",
+  nonverbal: "hmm",
 };
 
 let meta = null;
@@ -79,10 +80,39 @@ function fillGlobalStateSelect() {
   });
 }
 
+function defaultNonverbalValue() {
+  const lang = (plan?.language || "").toLowerCase();
+  const forms = meta?.vocab?.nonverbal_catalog?.indic_forms || [];
+  const match = forms.find((f) => f.language === lang);
+  if (match) return match.annotation_value || match.native;
+  return DEFAULT_VALUE.nonverbal;
+}
+
+/** Returns [{value, label}] for select options, or null for free text. */
 function valueOptionsForLane(lane) {
   if (lane === "content") return null;
   if (lane === "pause") return null;
-  return meta?.vocab?.[lane] || [];
+  if (lane === "nonverbal") {
+    const catalog = meta?.vocab?.nonverbal_catalog;
+    if (catalog?.options?.length) {
+      return catalog.options.map((o) => ({
+        value: o.id,
+        label: o.label || o.id,
+        group: o.group || "",
+      }));
+    }
+    // Fallback: flat ids (includes native Indic scripts)
+    return (meta?.vocab?.nonverbal || []).map((v) => ({
+      value: v,
+      label: v,
+      group: "",
+    }));
+  }
+  return (meta?.vocab?.[lane] || []).map((v) => ({
+    value: v,
+    label: v,
+    group: "",
+  }));
 }
 
 function renderClipList() {
@@ -102,7 +132,7 @@ function buildLanesDom() {
   root.innerHTML = "";
   LANE_ORDER.forEach((lane) => {
     const row = document.createElement("div");
-    row.className = `lane lane-${lane}` + (lane === "nonverbal" ? " disabled" : "");
+    row.className = `lane lane-${lane}`;
     row.dataset.lane = lane;
     row.innerHTML = `
       <div class="lane-label">${lane}</div>
@@ -111,7 +141,8 @@ function buildLanesDom() {
       </div>`;
     root.appendChild(row);
     const track = row.querySelector(".lane-track");
-    if (lane !== "nonverbal" && lane !== "content") {
+    // Content is ASR-sourced; still allow nonverbal + other lanes to drag-add.
+    if (lane !== "content") {
       track.addEventListener("mousedown", (e) => onTrackMouseDown(e, lane));
     }
   });
@@ -205,6 +236,7 @@ function addEvent(lane, start, end) {
   const type = LANE_TYPE[lane] || lane.toUpperCase();
   let value = DEFAULT_VALUE[lane] ?? "";
   if (lane === "pause") value = Math.round((end - start) * 1000);
+  if (lane === "nonverbal") value = defaultNonverbalValue();
   const ev = {
     type,
     start: Math.round(start * 1000) / 1000,
@@ -237,12 +269,52 @@ function openEditor(lane, index) {
     sel.classList.remove("hidden");
     text.classList.add("hidden");
     sel.innerHTML = "";
-    opts.forEach((v) => {
-      const o = document.createElement("option");
-      o.value = v;
-      o.textContent = v;
-      if (String(ev.value) === String(v)) o.selected = true;
-      sel.appendChild(o);
+    const byGroup = {};
+    opts.forEach((o) => {
+      const g = o.group || "_";
+      if (!byGroup[g]) byGroup[g] = [];
+      byGroup[g].push(o);
+    });
+    const groupOrder = [
+      "indic",
+      "conversational",
+      "emotional",
+      "breathing",
+      "thinking",
+      "questioning",
+      "physical",
+      "interaction",
+      "_",
+    ];
+    const seen = new Set();
+    groupOrder.forEach((g) => {
+      if (!byGroup[g]) return;
+      seen.add(g);
+      const parent = g === "_" ? sel : document.createElement("optgroup");
+      if (g !== "_") {
+        parent.label = g === "indic" ? "Indic (native transcript)" : g;
+        sel.appendChild(parent);
+      }
+      byGroup[g].forEach((item) => {
+        const o = document.createElement("option");
+        o.value = item.value;
+        o.textContent = item.label;
+        if (String(ev.value) === String(item.value)) o.selected = true;
+        parent.appendChild(o);
+      });
+    });
+    Object.keys(byGroup).forEach((g) => {
+      if (seen.has(g)) return;
+      const parent = document.createElement("optgroup");
+      parent.label = g;
+      sel.appendChild(parent);
+      byGroup[g].forEach((item) => {
+        const o = document.createElement("option");
+        o.value = item.value;
+        o.textContent = item.label;
+        if (String(ev.value) === String(item.value)) o.selected = true;
+        parent.appendChild(o);
+      });
     });
   } else {
     sel.classList.add("hidden");
@@ -339,8 +411,8 @@ async function saveClip() {
     value: el("global-state").value || null,
     source: "human",
   };
-  plan.nonverbal = [];
-  plan.lanes.nonverbal = [];
+  // Mirror nonverbal lane to top-level convenience field.
+  plan.nonverbal = plan.lanes.nonverbal || [];
   setStatus("Saving…");
   await api(`/api/clips/${encodeURIComponent(currentId)}`, {
     method: "PUT",

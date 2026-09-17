@@ -19,12 +19,14 @@ from duplex_data.speech_plan.schema import (
     ENERGY_VALUES,
     GLOBAL_STATE_VALUES,
     LANE_KEYS,
+    NONVERBAL_VALUES,
     PITCH_VALUES,
     RATE_VALUES,
     Event,
     GlobalState,
     SpeechPlan,
 )
+from duplex_data.speech_plan.vocab import nonverbal_meta_payload
 
 logger = logging.getLogger("duplex_data.speech_plan.annotator")
 
@@ -102,7 +104,9 @@ def create_app(root: Path):
                 "emphasis": list(EMPHASIS_VALUES),
                 "boundary": list(BOUNDARY_VALUES),
                 "pause": ["ms"],
-                "nonverbal": [],
+                # Flat id list for dropdowns + full catalog for UI grouping.
+                "nonverbal": list(NONVERBAL_VALUES),
+                "nonverbal_catalog": nonverbal_meta_payload(),
             },
         }
 
@@ -150,7 +154,6 @@ def create_app(root: Path):
             for e in lanes_raw.get(key, []):
                 events.append(Event.from_dict(e))
             lanes[key] = events
-        lanes["nonverbal"] = []
 
         gs = GlobalState.from_dict(incoming.get("global_state"))
         gs.source = "human"
@@ -160,7 +163,7 @@ def create_app(root: Path):
             duration=float(incoming.get("duration", existing.duration)),
             language=str(incoming.get("language", existing.language)),
             global_state=gs,
-            nonverbal=[],
+            nonverbal=[e.to_dict() for e in lanes.get("nonverbal", [])],
             lanes=lanes,
             tracks=incoming.get("tracks", existing.tracks),
             asr=incoming.get("asr", existing.asr),

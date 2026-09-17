@@ -1,10 +1,8 @@
-"""Unit tests for speech-plan schema + derive (no ASR / GPU)."""
+"""Unit tests for speech-plan schema + derive + nonverbal vocab."""
 
 from __future__ import annotations
 
 from pathlib import Path
-
-import numpy as np
 
 from duplex_data.speech_plan.acoustics import AcousticTracks
 from duplex_data.speech_plan.derive import (
@@ -14,13 +12,18 @@ from duplex_data.speech_plan.derive import (
     words_to_content_events,
 )
 from duplex_data.speech_plan.schema import Event, GlobalState, SpeechPlan
+from duplex_data.speech_plan.vocab import (
+    indic_forms,
+    list_nonverbal_event_ids,
+    nonverbal_dropdown_options,
+)
 
 
-def test_speech_plan_roundtrip(tmp_path: Path):
+def test_speech_plan_roundtrip_keeps_nonverbal(tmp_path: Path):
     plan = SpeechPlan(
         audio_path="clip.wav",
         duration=1.5,
-        language="te",
+        language="hi",
         global_state=GlobalState(value="reassuring", source="human"),
         lanes={
             "content": [Event("WORD", 0.0, 0.3, "hello", source="asr")],
@@ -30,13 +33,15 @@ def test_speech_plan_roundtrip(tmp_path: Path):
             "emphasis": [],
             "pause": [],
             "boundary": [],
-            "nonverbal": [Event("NONVERBAL", 0.0, 0.1, "sigh")],  # forced empty
+            "nonverbal": [
+                Event("NONVERBAL", 0.0, 0.1, "हम्म", source="human"),
+            ],
         },
         tracks={"f0_hz": [100.0]},
         asr={"transcript": "hello"},
     )
-    assert plan.nonverbal == []
-    assert plan.lanes["nonverbal"] == []
+    assert plan.lanes["nonverbal"][0].value == "हम्म"
+    assert plan.nonverbal[0]["value"] == "हम्म"
 
     path = tmp_path / "speech_plan.json"
     plan.save(path)
@@ -45,8 +50,40 @@ def test_speech_plan_roundtrip(tmp_path: Path):
     assert loaded.global_state.value == "reassuring"
     assert loaded.lanes["content"][0].value == "hello"
     assert loaded.lanes["pitch"][0].value == "rising"
-    assert loaded.nonverbal == []
-    assert loaded.lanes["nonverbal"] == []
+    assert loaded.lanes["nonverbal"][0].value == "हम्म"
+    assert loaded.nonverbal[0]["value"] == "हम्म"
+
+
+def test_indic_native_in_vocab():
+    from duplex_data.speech_plan.vocab import load_nonverbal_vocab
+
+    load_nonverbal_vocab.cache_clear()
+    ids = list_nonverbal_event_ids()
+    assert "laugh" in ids
+    assert "speech_laugh" in ids
+    assert "surprised_gasp" in ids
+    assert "huh_question" in ids
+    assert "hmm_long" in ids
+    assert "guffaw" in ids
+    # Direct native-script transcripts (not Latin-only)
+    assert "हम्म" in ids
+    assert "हाँ" in ids
+    assert "हाँ?" in ids
+    assert "वाह" in ids
+    assert "हाहा" in ids
+    assert "హ్మ్" in ids
+    assert "అయ్యో" in ids
+    assert "ஐயோ" in ids
+    forms = indic_forms()
+    assert any(f.get("annotation_value") == "ഹ്മ്" for f in forms)
+    assert any(f.get("annotation_value") == "उम्म" for f in forms)
+    opts = nonverbal_dropdown_options()
+    indic_opts = [o for o in opts if o.get("group") == "indic"]
+    assert len(indic_opts) >= 40
+    assert opts[0]["group"] == "indic"
+    assert any(o["id"] == "ம்" for o in indic_opts)
+    assert "questioning" in load_nonverbal_vocab()["categories"]
+
 
 
 def test_derive_pauses_and_rate():

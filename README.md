@@ -184,8 +184,17 @@ python -m duplex_data.speech_plan.annotator --root ./speech_plans
 | CONTENT + word times | ASR (Whisper word timestamps, or IndicConformer + WhisperX) |
 | PAUSE / PITCH / ENERGY / RATE | Auto from timing + Praat (parselmouth) / librosa |
 | EMPHASIS / BOUNDARY | Weak auto-propose; confirm in UI |
-| NONVERBAL | Always `[]` |
+| NONVERBAL | Human — English event ids **or Indic native-script transcripts** (`हम्म`, `హ్మ్`, …) |
 | GLOBAL STATE | Human (calm / serious / excited / reassuring / …) |
+
+### Nonverbal annotation
+
+Vocab + guide (English taxonomy + Indic direct transcripts):
+
+- [`duplex_data/speech_plan/vocab/nonverbal_events.json`](duplex_data/speech_plan/vocab/nonverbal_events.json)
+- [`duplex_data/speech_plan/vocab/NONVERBAL_ANNOTATION.md`](duplex_data/speech_plan/vocab/NONVERBAL_ANNOTATION.md)
+
+For Indic clips, set `Event.value` to the **native script** form (not only Latin `hmm`/`hm`). The annotator dropdown has an **Indic (native transcript)** group.
 
 Each clip folder under `--out` looks like:
 

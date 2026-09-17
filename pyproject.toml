@@ -44,4 +44,4 @@ where = ["."]
 include = ["duplex_data*"]
 
 [tool.setuptools.package-data]
-"duplex_data" = ["speech_plan/static/*"]
+"duplex_data" = ["speech_plan/static/*", "speech_plan/vocab/*"]

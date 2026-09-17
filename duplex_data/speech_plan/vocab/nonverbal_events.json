@@ -1,0 +1,2300 @@
+{
+  "version": "1.1",
+  "description": "Nonverbal vocal-event vocabulary. English event ids plus Indic native-script transcripts as first-class Event.value (direct orthography, not Latin-only).",
+  "annotation_policy": {
+    "indic": "For Indic speech, set Event.value to the native-script form (annotation_value). Transliteration is reference-only.",
+    "english": "For English / non-Indic, use snake_case event ids from events[].id."
+  },
+  "categories": [
+    "conversational",
+    "emotional",
+    "breathing",
+    "thinking",
+    "questioning",
+    "physical",
+    "interaction",
+    "indic"
+  ],
+  "events": [
+    {
+      "id": "hmm",
+      "label": "hmm",
+      "category": "conversational",
+      "definition": "Voiced hum used as filler or soft acknowledgement."
+    },
+    {
+      "id": "hm",
+      "label": "hm",
+      "category": "conversational",
+      "definition": "Short hummed acknowledgement or thinking cue."
+    },
+    {
+      "id": "mhm",
+      "label": "mhm",
+      "category": "conversational",
+      "definition": "Bilabial backchannel / agreement hum (mm-hmm style)."
+    },
+    {
+      "id": "uh",
+      "label": "uh",
+      "category": "conversational",
+      "definition": "Filled pause / hesitation particle (uh)."
+    },
+    {
+      "id": "um",
+      "label": "um",
+      "category": "conversational",
+      "definition": "Filled pause / hesitation particle (um/uhm)."
+    },
+    {
+      "id": "ah",
+      "label": "ah",
+      "category": "conversational",
+      "definition": "Open vowel interjection (ah)."
+    },
+    {
+      "id": "oh",
+      "label": "oh",
+      "category": "conversational",
+      "definition": "Realization or reaction interjection (oh)."
+    },
+    {
+      "id": "eh",
+      "label": "eh",
+      "category": "conversational",
+      "definition": "Questioning or uncertain interjection (eh)."
+    },
+    {
+      "id": "mm",
+      "label": "mm",
+      "category": "conversational",
+      "definition": "Closed-mouth hum; often mild acknowledgement."
+    },
+    {
+      "id": "huh",
+      "label": "huh",
+      "category": "conversational",
+      "definition": "Surprise or request-for-clarification interjection."
+    },
+    {
+      "id": "laugh",
+      "label": "laugh",
+      "category": "emotional",
+      "definition": "Audible laughter episode (non-speech or dominant over speech)."
+    },
+    {
+      "id": "chuckle",
+      "label": "chuckle",
+      "category": "emotional",
+      "definition": "Soft, short laugh."
+    },
+    {
+      "id": "giggle",
+      "label": "giggle",
+      "category": "emotional",
+      "definition": "Light, often higher-pitched laugh."
+    },
+    {
+      "id": "smile_voice",
+      "label": "smile-voice",
+      "category": "emotional",
+      "definition": "Audible smile quality on speech or near-speech vocalization."
+    },
+    {
+      "id": "cry",
+      "label": "cry",
+      "category": "emotional",
+      "definition": "Crying vocalization."
+    },
+    {
+      "id": "sob",
+      "label": "sob",
+      "category": "emotional",
+      "definition": "Sobbing / broken crying breath-voice."
+    },
+    {
+      "id": "gasp",
+      "label": "gasp",
+      "category": "emotional",
+      "definition": "Sudden sharp inhale from surprise or emotion."
+    },
+    {
+      "id": "excited_vocalization",
+      "label": "excited vocalization",
+      "category": "emotional",
+      "definition": "Non-lexical vocal burst expressing excitement."
+    },
+    {
+      "id": "frustrated_vocalization",
+      "label": "frustrated vocalization",
+      "category": "emotional",
+      "definition": "Non-lexical vocal burst expressing frustration."
+    },
+    {
+      "id": "surprise",
+      "label": "surprise",
+      "category": "emotional",
+      "definition": "Surprise vocalization not covered by ah/oh/huh."
+    },
+    {
+      "id": "relief",
+      "label": "relief",
+      "category": "emotional",
+      "definition": "Relief vocalization (often breathy exhale + voice)."
+    },
+    {
+      "id": "inhale",
+      "label": "inhale",
+      "category": "breathing",
+      "definition": "Audible inhalation."
+    },
+    {
+      "id": "exhale",
+      "label": "exhale",
+      "category": "breathing",
+      "definition": "Audible exhalation (not clearly a sigh)."
+    },
+    {
+      "id": "audible_breath",
+      "label": "audible breath",
+      "category": "breathing",
+      "definition": "Breath noise without clear in/out labeling."
+    },
+    {
+      "id": "deep_breath",
+      "label": "deep breath",
+      "category": "breathing",
+      "definition": "Notably deep or long breath."
+    },
+    {
+      "id": "sigh",
+      "label": "sigh",
+      "category": "breathing",
+      "definition": "Deep audible in- and/or out-breath with sigh quality (not generic breath)."
+    },
+    {
+      "id": "breath_before_speech",
+      "label": "breath before speech",
+      "category": "breathing",
+      "definition": "Audible breath immediately preceding speech onset."
+    },
+    {
+      "id": "thinking_sound",
+      "label": "thinking sound",
+      "category": "thinking",
+      "definition": "Non-lexical thinking cue (often hummed); function THINK."
+    },
+    {
+      "id": "hesitation",
+      "label": "hesitation",
+      "category": "thinking",
+      "definition": "Hesitation span or filled pause behavior (prefer uh/um when clear)."
+    },
+    {
+      "id": "prolonged_hesitation",
+      "label": "prolonged hesitation",
+      "category": "thinking",
+      "definition": "Extended hesitation / search for words."
+    },
+    {
+      "id": "self_correction",
+      "label": "self-correction",
+      "category": "thinking",
+      "definition": "Audible restart or repair vocalization around a correction."
+    },
+    {
+      "id": "unfinished_utterance",
+      "label": "unfinished utterance",
+      "category": "thinking",
+      "definition": "Abandoned / truncated utterance cue (trail-off or cut)."
+    },
+    {
+      "id": "cough",
+      "label": "cough",
+      "category": "physical",
+      "definition": "Cough."
+    },
+    {
+      "id": "sneeze",
+      "label": "sneeze",
+      "category": "physical",
+      "definition": "Sneeze."
+    },
+    {
+      "id": "yawn",
+      "label": "yawn",
+      "category": "physical",
+      "definition": "Yawn."
+    },
+    {
+      "id": "throat_clear",
+      "label": "throat clear",
+      "category": "physical",
+      "definition": "Throat clearing."
+    },
+    {
+      "id": "sniff",
+      "label": "sniff",
+      "category": "physical",
+      "definition": "Sniff."
+    },
+    {
+      "id": "lip_smack",
+      "label": "lip smack",
+      "category": "physical",
+      "definition": "Lip smack."
+    },
+    {
+      "id": "tongue_click",
+      "label": "tongue click",
+      "category": "physical",
+      "definition": "Tongue click / dental click."
+    },
+    {
+      "id": "backchannel",
+      "label": "backchannel",
+      "category": "interaction",
+      "definition": "Short listener vocalization during other-speaker speech (DualTurn-style BC)."
+    },
+    {
+      "id": "agreement_sound",
+      "label": "agreement sound",
+      "category": "interaction",
+      "definition": "Agreement / consent vocalization."
+    },
+    {
+      "id": "disagreement_sound",
+      "label": "disagreement sound",
+      "category": "interaction",
+      "definition": "Disagreement / rejection vocalization."
+    },
+    {
+      "id": "realization",
+      "label": "realization",
+      "category": "interaction",
+      "definition": "Realization / 'aha' style interaction cue."
+    },
+    {
+      "id": "confusion",
+      "label": "confusion",
+      "category": "interaction",
+      "definition": "Confusion / uncertainty interaction cue."
+    },
+    {
+      "id": "acknowledgement",
+      "label": "acknowledgement",
+      "category": "interaction",
+      "definition": "Acknowledgement / receipt of information (ACK)."
+    },
+    {
+      "id": "interruption_vocalization",
+      "label": "interruption vocalization",
+      "category": "interaction",
+      "definition": "Vocalization associated with interrupting or attempt to take floor."
+    },
+    {
+      "id": "uhm",
+      "label": "uhm",
+      "category": "conversational",
+      "definition": "Filled pause variant of um (uhm)."
+    },
+    {
+      "id": "uh_huh",
+      "label": "uh-huh",
+      "category": "conversational",
+      "definition": "Affirmative / continuer feedback (uh-huh)."
+    },
+    {
+      "id": "mm_hmm",
+      "label": "mm-hmm",
+      "category": "conversational",
+      "definition": "Affirmative humming backchannel (mm-hmm)."
+    },
+    {
+      "id": "yeah",
+      "label": "yeah",
+      "category": "conversational",
+      "definition": "Casual yes / acknowledgement token (semi-word)."
+    },
+    {
+      "id": "yep",
+      "label": "yep",
+      "category": "conversational",
+      "definition": "Short affirmative token."
+    },
+    {
+      "id": "nah",
+      "label": "nah",
+      "category": "conversational",
+      "definition": "Casual negative / disagreement token."
+    },
+    {
+      "id": "wow",
+      "label": "wow",
+      "category": "conversational",
+      "definition": "Surprise / admiration interjection (wow)."
+    },
+    {
+      "id": "whoa",
+      "label": "whoa",
+      "category": "conversational",
+      "definition": "Surprise / stop-attention interjection (whoa)."
+    },
+    {
+      "id": "ooh",
+      "label": "ooh",
+      "category": "conversational",
+      "definition": "Impressed or surprised vowel (ooh)."
+    },
+    {
+      "id": "aww",
+      "label": "aww",
+      "category": "conversational",
+      "definition": "Sympathy / soft reaction (aww)."
+    },
+    {
+      "id": "ugh",
+      "label": "ugh",
+      "category": "conversational",
+      "definition": "Frustration / disgust interjection (ugh)."
+    },
+    {
+      "id": "ouch",
+      "label": "ouch",
+      "category": "conversational",
+      "definition": "Pain interjection (ouch)."
+    },
+    {
+      "id": "shh",
+      "label": "shh",
+      "category": "conversational",
+      "definition": "Hushing sound (shh/pst)."
+    },
+    {
+      "id": "tsk",
+      "label": "tsk",
+      "category": "conversational",
+      "definition": "Dental click of disapproval or attention (tsk)."
+    },
+    {
+      "id": "speech_laugh",
+      "label": "speech-laugh",
+      "category": "emotional",
+      "definition": "Laughter overlapping speech (speech-laugh)."
+    },
+    {
+      "id": "breathy_giggle",
+      "label": "breathy giggle",
+      "category": "emotional",
+      "definition": "Soft airy giggle."
+    },
+    {
+      "id": "nervous_giggle",
+      "label": "nervous giggle",
+      "category": "emotional",
+      "definition": "High-pitched anxious giggle."
+    },
+    {
+      "id": "snicker",
+      "label": "snicker",
+      "category": "emotional",
+      "definition": "Stifled laugh; often mockery or suppressed amusement."
+    },
+    {
+      "id": "snorting_giggle",
+      "label": "snorting giggle",
+      "category": "emotional",
+      "definition": "Brief nasal snort with laughter."
+    },
+    {
+      "id": "guffaw",
+      "label": "guffaw",
+      "category": "emotional",
+      "definition": "Loud unrestrained laugh."
+    },
+    {
+      "id": "cackle",
+      "label": "cackle",
+      "category": "emotional",
+      "definition": "Harsh sharp laugh."
+    },
+    {
+      "id": "hehe",
+      "label": "hehe",
+      "category": "emotional",
+      "definition": "Soft voiced laugh token (hehe)."
+    },
+    {
+      "id": "haha",
+      "label": "haha",
+      "category": "emotional",
+      "definition": "Open laugh token (haha)."
+    },
+    {
+      "id": "lol_voice",
+      "label": "lol-voice",
+      "category": "emotional",
+      "definition": "Playful laugh-like vocalization without full laugh episode."
+    },
+    {
+      "id": "surprised_gasp",
+      "label": "surprised gasp",
+      "category": "emotional",
+      "definition": "Quick inhale of astonishment (distinct from fearful gasp)."
+    },
+    {
+      "id": "fearful_gasp",
+      "label": "fearful gasp",
+      "category": "emotional",
+      "definition": "Sudden inhale showing shock or fear."
+    },
+    {
+      "id": "sharp_inhale",
+      "label": "sharp inhale",
+      "category": "emotional",
+      "definition": "Quick breath of sudden realization (not full gasp)."
+    },
+    {
+      "id": "mild_surprise",
+      "label": "mild surprise",
+      "category": "emotional",
+      "definition": "Low-intensity surprise vocalization."
+    },
+    {
+      "id": "strong_surprise",
+      "label": "strong surprise",
+      "category": "emotional",
+      "definition": "High-intensity surprise / startled vocalization."
+    },
+    {
+      "id": "startle",
+      "label": "startle",
+      "category": "emotional",
+      "definition": "Startle burst (jump scare reaction)."
+    },
+    {
+      "id": "admiration",
+      "label": "admiration",
+      "category": "emotional",
+      "definition": "Admiration / wow-like affect burst."
+    },
+    {
+      "id": "alarm",
+      "label": "alarm",
+      "category": "emotional",
+      "definition": "Alarm / distress exclamation vocalization."
+    },
+    {
+      "id": "disgust_sound",
+      "label": "disgust sound",
+      "category": "emotional",
+      "definition": "Disgust vocalization (e.g. ugh/ew quality)."
+    },
+    {
+      "id": "er",
+      "label": "er",
+      "category": "thinking",
+      "definition": "Filled pause (er)."
+    },
+    {
+      "id": "erm",
+      "label": "erm",
+      "category": "thinking",
+      "definition": "Filled pause (erm)."
+    },
+    {
+      "id": "uhh",
+      "label": "uhh",
+      "category": "thinking",
+      "definition": "Lengthened uh hesitation."
+    },
+    {
+      "id": "umm",
+      "label": "umm",
+      "category": "thinking",
+      "definition": "Lengthened um hesitation."
+    },
+    {
+      "id": "hmm_long",
+      "label": "hmm (long)",
+      "category": "thinking",
+      "definition": "Prolonged hummed thinking sound."
+    },
+    {
+      "id": "thinking_pause_filled",
+      "label": "thinking filled pause",
+      "category": "thinking",
+      "definition": "Filled pause clearly marking word search / planning."
+    },
+    {
+      "id": "word_search",
+      "label": "word search",
+      "category": "thinking",
+      "definition": "Audible word-search behavior (drawl + filler)."
+    },
+    {
+      "id": "tentative",
+      "label": "tentative",
+      "category": "thinking",
+      "definition": "Tentative / unsure vocalization while formulating."
+    },
+    {
+      "id": "huh_question",
+      "label": "huh?",
+      "category": "questioning",
+      "definition": "Rising huh requesting clarification / non-understanding."
+    },
+    {
+      "id": "eh_question",
+      "label": "eh?",
+      "category": "questioning",
+      "definition": "Rising eh seeking confirmation or clarification."
+    },
+    {
+      "id": "hm_question",
+      "label": "hm?",
+      "category": "questioning",
+      "definition": "Rising hm / hmm as question or soft challenge."
+    },
+    {
+      "id": "what_token",
+      "label": "what?",
+      "category": "questioning",
+      "definition": "Short what? as non-understanding / surprise-question."
+    },
+    {
+      "id": "pardon",
+      "label": "pardon",
+      "category": "questioning",
+      "definition": "Pardon / sorry? style clarification request."
+    },
+    {
+      "id": "nonunderstanding",
+      "label": "non-understanding",
+      "category": "questioning",
+      "definition": "Feedback marking failure to understand."
+    },
+    {
+      "id": "confirmation_seek",
+      "label": "confirmation seek",
+      "category": "questioning",
+      "definition": "Rising token seeking yes/no confirmation."
+    },
+    {
+      "id": "questioning_rise",
+      "label": "questioning rise",
+      "category": "questioning",
+      "definition": "Ambiguous form with clear questioning rise."
+    },
+    {
+      "id": "continuer",
+      "label": "continuer",
+      "category": "interaction",
+      "definition": "Keep-going feedback (generic continuer)."
+    },
+    {
+      "id": "sympathy_sound",
+      "label": "sympathy sound",
+      "category": "interaction",
+      "definition": "Sympathy / empathy feedback vocalization."
+    },
+    {
+      "id": "disapproval_sound",
+      "label": "disapproval sound",
+      "category": "interaction",
+      "definition": "Disapproval / mild rejection feedback."
+    },
+    {
+      "id": "mild_surprise_feedback",
+      "label": "mild surprise feedback",
+      "category": "interaction",
+      "definition": "Listener mild-surprise assessment."
+    },
+    {
+      "id": "strong_surprise_feedback",
+      "label": "strong surprise feedback",
+      "category": "interaction",
+      "definition": "Listener strong-surprise assessment."
+    }
+  ],
+  "indic_forms": [
+    {
+      "id": "indic_hi_hmm",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हम्म",
+      "transliteration": "hmm",
+      "annotation_value": "हम्म",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "hmm",
+        "thinking_sound",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_haan",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हाँ",
+      "transliteration": "hã",
+      "annotation_value": "हाँ",
+      "ipa": "ɦɑ̃ː",
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "acknowledgement",
+        "agreement_sound",
+        "backchannel",
+        "mhm"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_um",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "उम्म",
+      "transliteration": "umm",
+      "annotation_value": "उम्म",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "um",
+        "hesitation",
+        "thinking_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_uh",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "उह",
+      "transliteration": "uh",
+      "annotation_value": "उह",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "uh",
+        "hesitation"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_ah",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "आह",
+      "transliteration": "aah",
+      "annotation_value": "आह",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "realization",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_oh",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "ओह",
+      "transliteration": "oh",
+      "annotation_value": "ओह",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "realization",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_are",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "अरे",
+      "transliteration": "are",
+      "annotation_value": "अरे",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "surprise",
+        "oh",
+        "realization"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_hm",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "హ్మ్",
+      "transliteration": "hm",
+      "annotation_value": "హ్మ్",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "hm",
+        "thinking_sound",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_aa",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "ఆ",
+      "transliteration": "aa",
+      "annotation_value": "ఆ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "acknowledgement",
+        "backchannel"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_aha",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "అహ్",
+      "transliteration": "ah",
+      "annotation_value": "అహ్",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "realization"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_oh",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "ఓహ్",
+      "transliteration": "oh",
+      "annotation_value": "ఓహ్",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "surprise",
+        "realization"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_um",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "ఉమ్",
+      "transliteration": "um",
+      "annotation_value": "ఉమ్",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "um",
+        "hesitation",
+        "thinking_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_hm",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ഹ്മ്",
+      "transliteration": "hm",
+      "annotation_value": "ഹ്മ്",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_aa",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ആ",
+      "transliteration": "aa",
+      "annotation_value": "ആ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "acknowledgement",
+        "backchannel"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_um",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ഉം",
+      "transliteration": "um",
+      "annotation_value": "ഉം",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "um",
+        "mm",
+        "hesitation",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_oh",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ഓഹ്",
+      "transliteration": "oh",
+      "annotation_value": "ഓഹ്",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_m",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ம்",
+      "transliteration": "m",
+      "annotation_value": "ம்",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "mm",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_mmm",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ம்ம்",
+      "transliteration": "mm",
+      "annotation_value": "ம்ம்",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "mm",
+        "hmm",
+        "thinking_sound",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_hmm",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஹ்ம்ம்",
+      "transliteration": "hmm",
+      "annotation_value": "ஹ்ம்ம்",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hmm",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_aa",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஆ",
+      "transliteration": "aa",
+      "annotation_value": "ஆ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "acknowledgement",
+        "backchannel"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_um",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "உம்",
+      "transliteration": "um",
+      "annotation_value": "உம்",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "um",
+        "hesitation"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_oh",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஓ",
+      "transliteration": "o",
+      "annotation_value": "ஓ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "realization"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_hm",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಹ್ಮ್",
+      "transliteration": "hm",
+      "annotation_value": "ಹ್ಮ್",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "hm",
+        "thinking_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_aa",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಆ",
+      "transliteration": "aa",
+      "annotation_value": "ಆ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "acknowledgement",
+        "backchannel"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_um",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಉಂ",
+      "transliteration": "um",
+      "annotation_value": "ಉಂ",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "um",
+        "mm",
+        "hesitation",
+        "acknowledgement"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_oh",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಓಹ್",
+      "transliteration": "oh",
+      "annotation_value": "ಓಹ್",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_hum",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "হুম",
+      "transliteration": "hum",
+      "annotation_value": "হুম",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hmm",
+        "acknowledgement",
+        "agreement_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_hu",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "হুঁ",
+      "transliteration": "hũ",
+      "annotation_value": "হুঁ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hmm",
+        "acknowledgement",
+        "agreement_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_aah",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "আহ",
+      "transliteration": "ah",
+      "annotation_value": "আহ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "realization"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_oh",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "ওহ",
+      "transliteration": "oh",
+      "annotation_value": "ওহ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_um",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "উম",
+      "transliteration": "um",
+      "annotation_value": "উম",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "um",
+        "hesitation"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_hmm",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "हम्म",
+      "transliteration": "hmm",
+      "annotation_value": "हम्म",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "hmm",
+        "thinking_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_ho",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "हो",
+      "transliteration": "ho",
+      "annotation_value": "हो",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "acknowledgement",
+        "agreement_sound",
+        "backchannel"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_ah",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "अह",
+      "transliteration": "ah",
+      "annotation_value": "अह",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ah",
+        "realization"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_oh",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "ओह",
+      "transliteration": "oh",
+      "annotation_value": "ओह",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "oh",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_umm",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "उम्म",
+      "transliteration": "umm",
+      "annotation_value": "उम्म",
+      "ipa": null,
+      "functions": [
+        "THINK"
+      ],
+      "maps_to": [
+        "um",
+        "hesitation",
+        "thinking_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_wah",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "वाह",
+      "transliteration": "wah",
+      "annotation_value": "वाह",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "wow",
+        "admiration",
+        "strong_surprise",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_haye",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हाय",
+      "transliteration": "haay",
+      "annotation_value": "हाय",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "alarm",
+        "strong_surprise",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_uf",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "उफ़",
+      "transliteration": "uf",
+      "annotation_value": "उफ़",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "ugh",
+        "frustrated_vocalization",
+        "disgust_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_kya",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "क्या",
+      "transliteration": "kya",
+      "annotation_value": "क्या",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "what_token",
+        "surprise",
+        "huh_question"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_kya_q",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "क्या?",
+      "transliteration": "kya?",
+      "annotation_value": "क्या?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding",
+        "confirmation_seek"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_haan_q",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हाँ?",
+      "transliteration": "hã?",
+      "annotation_value": "हाँ?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek",
+        "huh_question",
+        "questioning_rise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_ae",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "ए",
+      "transliteration": "e",
+      "annotation_value": "ए",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "eh",
+        "eh_question",
+        "huh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_ae_q",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "ए?",
+      "transliteration": "e?",
+      "annotation_value": "ए?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "eh_question",
+        "huh_question",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_haha",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हाहा",
+      "transliteration": "haha",
+      "annotation_value": "हाहा",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh",
+        "guffaw"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_hehe",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हेहे",
+      "transliteration": "hehe",
+      "annotation_value": "हेहे",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hehe",
+        "chuckle",
+        "giggle"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_hihi",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हीही",
+      "transliteration": "hihi",
+      "annotation_value": "हीही",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "giggle",
+        "breathy_giggle",
+        "hehe"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_hmm_q",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "हम्म?",
+      "transliteration": "hmm?",
+      "annotation_value": "हम्म?",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "questioning_rise",
+        "thinking_sound"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_achha",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "अच्छा",
+      "transliteration": "acchā",
+      "annotation_value": "अच्छा",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "acknowledgement",
+        "realization",
+        "backchannel"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_hi_achha_q",
+      "language": "hi",
+      "language_name": "Hindi",
+      "native": "अच्छा?",
+      "transliteration": "acchā?",
+      "annotation_value": "अच्छा?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "confirmation_seek",
+        "hm_question",
+        "mild_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_ayyo",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "అయ్యో",
+      "transliteration": "ayyō",
+      "annotation_value": "అయ్యో",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "alarm",
+        "strong_surprise",
+        "surprise",
+        "ouch"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_abba",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "అబ్బా",
+      "transliteration": "abbā",
+      "annotation_value": "అబ్బా",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "wow",
+        "admiration",
+        "strong_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_eme",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "ఏమి",
+      "transliteration": "ēmi",
+      "annotation_value": "ఏమి",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "what_token",
+        "huh_question",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_eme_q",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "ఏమి?",
+      "transliteration": "ēmi?",
+      "annotation_value": "ఏమి?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_aa_q",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "ఆ?",
+      "transliteration": "aa?",
+      "annotation_value": "ఆ?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek",
+        "huh_question"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_haha",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "హాహా",
+      "transliteration": "hāhā",
+      "annotation_value": "హాహా",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_hehe",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "హేహే",
+      "transliteration": "hēhē",
+      "annotation_value": "హేహే",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hehe",
+        "chuckle",
+        "giggle"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_te_hm_q",
+      "language": "te",
+      "language_name": "Telugu",
+      "native": "హ్మ్?",
+      "transliteration": "hm?",
+      "annotation_value": "హ్మ్?",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "questioning_rise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_aiyō",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஐயோ",
+      "transliteration": "aiyō",
+      "annotation_value": "ஐயோ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "alarm",
+        "ouch",
+        "strong_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_ada",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "அடா",
+      "transliteration": "aḍā",
+      "annotation_value": "அடா",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "surprise",
+        "wow",
+        "mild_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_enna",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "என்ன",
+      "transliteration": "enna",
+      "annotation_value": "என்ன",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "what_token",
+        "huh_question"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_enna_q",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "என்ன?",
+      "transliteration": "enna?",
+      "annotation_value": "என்ன?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_aa_q",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஆ?",
+      "transliteration": "aa?",
+      "annotation_value": "ஆ?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_haha",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஹாஹா",
+      "transliteration": "hāhā",
+      "annotation_value": "ஹாஹா",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_hehe",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ஹேஹே",
+      "transliteration": "hēhē",
+      "annotation_value": "ஹேஹே",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hehe",
+        "chuckle",
+        "giggle"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ta_mm_q",
+      "language": "ta",
+      "language_name": "Tamil",
+      "native": "ம்?",
+      "transliteration": "m?",
+      "annotation_value": "ம்?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "questioning_rise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_ayyo",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಅಯ್ಯೋ",
+      "transliteration": "ayyō",
+      "annotation_value": "ಅಯ್ಯೋ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "alarm",
+        "ouch",
+        "strong_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_abba",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಅಬ್ಬಾ",
+      "transliteration": "abbā",
+      "annotation_value": "ಅಬ್ಬಾ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "wow",
+        "admiration",
+        "surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_enu_q",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಏನು?",
+      "transliteration": "ēnu?",
+      "annotation_value": "ಏನು?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_aa_q",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಆ?",
+      "transliteration": "aa?",
+      "annotation_value": "ಆ?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_haha",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಹಾಹಾ",
+      "transliteration": "hāhā",
+      "annotation_value": "ಹಾಹಾ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_kn_hm_q",
+      "language": "kn",
+      "language_name": "Kannada",
+      "native": "ಹ್ಮ್?",
+      "transliteration": "hm?",
+      "annotation_value": "ಹ್ಮ್?",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "questioning_rise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_ayyo",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "അയ്യോ",
+      "transliteration": "ayyō",
+      "annotation_value": "അയ്യോ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "alarm",
+        "ouch",
+        "strong_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_entha_q",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "എന്താ?",
+      "transliteration": "enthā?",
+      "annotation_value": "എന്താ?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_aa_q",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ആ?",
+      "transliteration": "aa?",
+      "annotation_value": "ആ?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_haha",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ഹാഹാ",
+      "transliteration": "hāhā",
+      "annotation_value": "ഹാഹാ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_ml_hm_q",
+      "language": "ml",
+      "language_name": "Malayalam",
+      "native": "ഹ്മ്?",
+      "transliteration": "hm?",
+      "annotation_value": "ഹ്മ്?",
+      "ipa": null,
+      "functions": [
+        "THINK",
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "questioning_rise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_are",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "আরে",
+      "transliteration": "āre",
+      "annotation_value": "আরে",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "surprise",
+        "oh",
+        "mild_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_bah",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "বাহ",
+      "transliteration": "bāh",
+      "annotation_value": "বাহ",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "wow",
+        "admiration"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_ki_q",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "কী?",
+      "transliteration": "ki?",
+      "annotation_value": "কী?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_humn_q",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "হুম?",
+      "transliteration": "hum?",
+      "annotation_value": "হুম?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_haha",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "হাহা",
+      "transliteration": "hāhā",
+      "annotation_value": "হাহা",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_bn_hehe",
+      "language": "bn",
+      "language_name": "Bengali",
+      "native": "হেহে",
+      "transliteration": "hehe",
+      "annotation_value": "হেহে",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hehe",
+        "chuckle",
+        "giggle"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_are",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "अरे",
+      "transliteration": "are",
+      "annotation_value": "अरे",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "surprise",
+        "oh",
+        "mild_surprise"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_wah",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "वाह",
+      "transliteration": "wah",
+      "annotation_value": "वाह",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "wow",
+        "admiration"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_kay_q",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "काय?",
+      "transliteration": "kāy?",
+      "annotation_value": "काय?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "huh_question",
+        "what_token",
+        "nonunderstanding"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_ho_q",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "हो?",
+      "transliteration": "ho?",
+      "annotation_value": "हो?",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hm_question",
+        "confirmation_seek"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_haha",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "हाहा",
+      "transliteration": "haha",
+      "annotation_value": "हाहा",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "haha",
+        "laugh"
+      ],
+      "audio_needed": true
+    },
+    {
+      "id": "indic_mr_hehe",
+      "language": "mr",
+      "language_name": "Marathi",
+      "native": "हेहे",
+      "transliteration": "hehe",
+      "annotation_value": "हेहे",
+      "ipa": null,
+      "functions": [
+        "ACK"
+      ],
+      "maps_to": [
+        "hehe",
+        "chuckle",
+        "giggle"
+      ],
+      "audio_needed": true
+    }
+  ],
+  "references": [
+    {
+      "id": "dualturn2026",
+      "title": "DualTurn: Learning Turn-Taking from Dual-Channel Generative Speech Pretraining",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2603.08216",
+      "note": "Defines BC as short agent vocalization during user speech; informs interaction/backchannel."
+    },
+    {
+      "id": "trouvain_truong2012",
+      "title": "Comparing Non-Verbal Vocalisations in Conversational Speech Corpora",
+      "year": 2012,
+      "url": "https://www.coli.uni-saarland.de/~trouvain/Trouvain_Truong_2012b.pdf",
+      "note": "Laughter and breath dominate NVVs; fillers and feedback treated as semi-words."
+    },
+    {
+      "id": "trouvain_werner2020",
+      "title": "Comparing Annotations of Non-verbal Vocalisations in Speech Corpora",
+      "year": 2020,
+      "url": "https://www.coli.uni-saarland.de/trouvain/docs/Trouvain_Werner_2020.pdf",
+      "note": "Cross-corpus category mismatch; laugh vs speech-laugh; breath subtyping limits."
+    },
+    {
+      "id": "truong2014_sighs",
+      "title": "An annotation scheme for sighs in spontaneous dialogue",
+      "year": 2014,
+      "url": "https://www.isca-archive.org/interspeech_2014/truong14_interspeech.pdf",
+      "note": "Sigh distinct from generic breath: deep audible in-/out-breath."
+    },
+    {
+      "id": "schuller2012_nvl",
+      "title": "Discrimination of linguistic and non-linguistic vocalizations in spontaneous speech",
+      "year": 2012,
+      "url": "https://doi.org/10.21437/interspeech.2012-36",
+      "note": "Separates consent/backchannel, filled pauses, vocal noise, laughter."
+    },
+    {
+      "id": "nvs38k2025",
+      "title": "A Scalable Pipeline for Enabling Non-Verbal Speech Generation and Understanding (NonVerbalSpeech-38K)",
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2508.05385",
+      "note": "Modern NV tags: laugh, sigh, cough, gasp, yawn, breath, sniff, throat clearing, cry."
+    },
+    {
+      "id": "nvspeech2025",
+      "title": "NVSpeech: An Integrated and Scalable Pipeline for Human-Like Speech Modeling with Paralinguistic Vocalizations",
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2508.04195",
+      "note": "Word-level paraverbal tags including Uhm, Confirmation-en, Laughter, Breathing, Sigh."
+    },
+    {
+      "id": "indicvoices2024",
+      "title": "IndicVoices: Towards building an Inclusive Multilingual Speech Dataset for Indian Languages",
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2403.01926",
+      "note": "Verbatim (Level-1) Indic transcription orthography; tags like [hmm] alongside native script."
+    },
+    {
+      "id": "prasad2010_haan",
+      "title": "Prosody Cues For Classification of the Discourse Particle hã in Hindi",
+      "year": 2010,
+      "url": "https://www.isca-archive.org/interspeech_2010/prasad10_interspeech.pdf",
+      "note": "Hindi हाँ / hã as ACK vs question vs backchannel by prosody."
+    },
+    {
+      "id": "wildre2024_disfluency",
+      "title": "Towards Disfluency Annotated Corpora for Indian Languages",
+      "year": 2024,
+      "url": "https://aclanthology.org/2024.wildre-1.1.pdf",
+      "note": "Indic filled pauses vs meaningful interjections; Tamil ம்ம் etc."
+    },
+    {
+      "id": "laion_vocalburst",
+      "title": "LAION VocalBurst taxonomy (voice-taxonomies)",
+      "year": 2024,
+      "url": "https://github.com/LAION-AI/voice-taxonomies/tree/main/vocalburst",
+      "note": "Laughter subtypes and gasp/inhale surprise variants."
+    },
+    {
+      "id": "trouvain2014_prosody",
+      "title": "Laughing, Breathing, Clicking - The Prosody of Nonverbal Vocalisations",
+      "year": 2014,
+      "url": "https://www.coli.uni-saarland.de/~trouvain/docs/Trouvain_2014.pdf",
+      "note": "Speech-laugh, affect bursts, fillers as NVVs."
+    },
+    {
+      "id": "feedback_functions2023",
+      "title": "Classification of Feedback Functions in Spoken Dialog Using LLMs and Prosodic Features",
+      "year": 2023,
+      "url": "https://hal.science/hal-04220966",
+      "note": "Feedback: continue, nonunderstanding, mild/strong surprise."
+    }
+  ]
+}
