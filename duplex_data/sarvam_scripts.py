@@ -14,13 +14,86 @@ logger = logging.getLogger("duplex_data.sarvam_scripts")
 
 DEFAULT_LLM = "sarvamai/sarvam-30b"
 FALLBACK_LLM = "sarvamai/sarvam-m"
+# Full 22 scheduled Indian languages (+ English). MoE ~2.4B active.
+# https://huggingface.co/sarvamai/sarvam-30b
+INDIC_22_LLM = "sarvamai/sarvam-30b"
+# Optional alt 22-lang MoE (BharatGen Param2; English + 21 Indic).
+# https://huggingface.co/bharatgenai/Param2-17B-A2.4B-Thinking
+PARAM2_LLM = "bharatgenai/Param2-17B-A2.4B-Thinking"
+# AI4Bharat 7B — Hindi (+English) only; not 22-lang.
+# https://huggingface.co/ai4bharat/Airavata
+INDIC_7B_LLM = "ai4bharat/Airavata"
 
-LANG_NAME = {
-    "te": "Telugu",
-    "hi": "Hindi",
-    "ta": "Tamil",
-    "kn": "Kannada",
+# Short aliases → HF ids (for --llm-model).
+LLM_ALIASES: dict[str, str] = {
+    "sarvam-30b": "sarvamai/sarvam-30b",
+    "sarvam-m": "sarvamai/sarvam-m",
+    "sarvam": "sarvamai/sarvam-m",
+    # 22 scheduled Indic languages
+    "indic-22": INDIC_22_LLM,
+    "sarvam-22": INDIC_22_LLM,
+    "indic22": INDIC_22_LLM,
+    "param2": PARAM2_LLM,
+    "param2-17b": PARAM2_LLM,
+    # Hindi-focused 7B
+    "indic-7b": INDIC_7B_LLM,
+    "airavata": INDIC_7B_LLM,
+    "airavata-7b": INDIC_7B_LLM,
 }
+
+# ISO-ish codes used by this repo → display name (22 scheduled + English).
+LANG_NAME = {
+    "en": "English",
+    "hi": "Hindi",
+    "as": "Assamese",
+    "bn": "Bengali",
+    "brx": "Bodo",
+    "bo": "Bodo",  # Sarvam card uses bo
+    "doi": "Dogri",
+    "gu": "Gujarati",
+    "kn": "Kannada",
+    "ks": "Kashmiri",
+    "kok": "Konkani",
+    "mai": "Maithili",
+    "ml": "Malayalam",
+    "mni": "Manipuri",
+    "mr": "Marathi",
+    "ne": "Nepali",
+    "or": "Odia",
+    "pa": "Punjabi",
+    "sa": "Sanskrit",
+    "sat": "Santali",
+    "sd": "Sindhi",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "ur": "Urdu",
+}
+
+# Official 22 scheduled language codes (prefer brx for Bodo in our CLIs).
+INDIC_22_LANGS = (
+    "as",
+    "bn",
+    "brx",
+    "doi",
+    "gu",
+    "hi",
+    "kn",
+    "ks",
+    "kok",
+    "mai",
+    "ml",
+    "mni",
+    "mr",
+    "ne",
+    "or",
+    "pa",
+    "sa",
+    "sat",
+    "sd",
+    "ta",
+    "te",
+    "ur",
+)
 
 
 @dataclass
@@ -60,7 +133,14 @@ TRANSFORMERS_MIN_HINT = (
 
 
 def resolve_llm_model(model_id: str, *, strict_llm: bool = False) -> str:
-    """Map sarvam-30b → sarvam-m when transformers lacks ALL_ATTENTION_FUNCTIONS."""
+    """Expand aliases; map sarvam-30b → sarvam-m when transformers is too old."""
+    raw = (model_id or DEFAULT_LLM).strip()
+    key = raw.lower().replace("_", "-")
+    if key in LLM_ALIASES:
+        model_id = LLM_ALIASES[key]
+    else:
+        model_id = raw
+
     if "sarvam-30b" not in model_id.lower():
         return model_id
 
@@ -79,9 +159,13 @@ def resolve_llm_model(model_id: str, *, strict_llm: bool = False) -> str:
         logger.warning(
             "sarvam-30b needs transformers>=4.57 (ALL_ATTENTION_FUNCTIONS missing; "
             "have %s). Falling back to %s. "
-            "Upgrade transformers to keep 30B, or pass --strict-llm to fail instead.",
+            "Upgrade transformers to keep 30B, or pass --strict-llm to fail instead. "
+            "For 22 Indic langs keep/upgrade for sarvam-30b, or use "
+            "--llm-model indic-22 after upgrading transformers. "
+            "Hindi-only 7B: --llm-model indic-7b (%s).",
             ver,
             FALLBACK_LLM,
+            INDIC_7B_LLM,
         )
         return FALLBACK_LLM
     return model_id
@@ -110,6 +194,8 @@ def load_llm(
         getattr(transformers, "__version__", "?"),
     )
     tok = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    if tok.pad_token is None and getattr(tok, "eos_token", None) is not None:
+        tok.pad_token = tok.eos_token
     kwargs: dict[str, Any] = {"trust_remote_code": True, "device_map": "auto"}
     if load_in_4bit:
         try:

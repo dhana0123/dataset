@@ -41,8 +41,30 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--llm",
         default="template",
-        choices=["template", "parse_echo"],
-        help="LLM backend (default: offline template)",
+        choices=[
+            "template",
+            "parse_echo",
+            "indic-22",
+            "sarvam-30b",
+            "param2",
+            "airavata",
+            "indic-7b",
+        ],
+        help=(
+            "LLM backend (default: template; "
+            "indic-22/sarvam-30b = 22 Indic langs; "
+            "airavata/indic-7b = Hindi 7B only)"
+        ),
+    )
+    parser.add_argument(
+        "--llm-model",
+        default=None,
+        help="Optional HF id override (indic-22 → sarvamai/sarvam-30b)",
+    )
+    parser.add_argument(
+        "--llm-load-in-4bit",
+        action="store_true",
+        help="Load Indic LLM in 4-bit (needs bitsandbytes)",
     )
     parser.add_argument(
         "--speaker-style",
@@ -80,6 +102,8 @@ def main(argv: list[str] | None = None) -> int:
             transcript_path=args.transcript,
             align_model=args.align_model,
             llm_backend=args.llm,
+            llm_model=args.llm_model,
+            llm_load_in_4bit=args.llm_load_in_4bit,
             speaker_style=args.speaker_style,
             skip_tts=args.skip_tts,
         )

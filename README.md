@@ -114,7 +114,27 @@ python -m duplex_data.synthetic --out ./moshi_im_synth_te5 --num-dialogs 5 \
   --scripts-dir ./moshi_im_synth_te5/scripts --hf-dataset BelluAi/dupxel-indic
 ```
 
-Or pin the mid-size model explicitly: `--llm-model sarvamai/sarvam-m`
+Or pin mid-size / Hindi-only / 22-lang models:
+```bash
+# Sarvam mid (auto-fallback target; fewer langs than 30B)
+python -m duplex_data.synthetic ... --llm-model sarvamai/sarvam-m
+
+# Full 22 scheduled Indic languages (+ English) — recommended
+python -m duplex_data.synthetic ... --llm-model indic-22
+# same as: --llm-model sarvamai/sarvam-30b
+
+# Optional alt 22-lang MoE (BharatGen Param2)
+python -m duplex_data.synthetic ... --llm-model param2
+
+# AI4Bharat Airavata 7B — Hindi (+English) only, NOT 22-lang
+python -m duplex_data.synthetic ... --llm-model indic-7b
+# same as: --llm-model ai4bharat/Airavata
+```
+
+Aliases:
+- `indic-22`, `sarvam-22` → [`sarvamai/sarvam-30b`](https://huggingface.co/sarvamai/sarvam-30b) (22 Indic)
+- `param2`, `param2-17b` → [`bharatgenai/Param2-17B-A2.4B-Thinking`](https://huggingface.co/bharatgenai/Param2-17B-A2.4B-Thinking)
+- `indic-7b`, `airavata`, `airavata-7b` → [`ai4bharat/Airavata`](https://huggingface.co/ai4bharat/Airavata) (Hindi only)
 
 ```bash
 cd data && pip install -e ".[synthetic]"
@@ -222,7 +242,24 @@ python -m duplex_data.temporal.train_tts \
   --data ./tsr_runs --epochs 3 --device cpu --out ./runs/tts_conditioner
 ```
 
-LLM stays `TemplateLLM` until Phase 3; see [`duplex_data/temporal/config_llm_lora.yaml`](duplex_data/temporal/config_llm_lora.yaml).
+LLM stays `TemplateLLM` by default. For **all 22 scheduled Indic languages** use Sarvam-30B:
+
+```bash
+python -m duplex_data.tsr.run --audio user.wav --lang te --out ./tsr_runs/clip1 \
+  --llm indic-22 --device cuda
+# aliases: --llm sarvam-30b
+# optional: --llm param2
+```
+
+Hindi-only lighter 7B (Airavata — **not** 22-lang):
+
+```bash
+python -m duplex_data.tsr.run --audio user.wav --lang hi --out ./tsr_runs/clip1 \
+  --llm airavata --device cuda
+# alias: --llm indic-7b
+```
+
+Phase-3 LoRA stub: [`duplex_data/temporal/config_llm_lora.yaml`](duplex_data/temporal/config_llm_lora.yaml) (defaults to Sarvam-30B / indic-22).
 
 **Auto vs human**
 

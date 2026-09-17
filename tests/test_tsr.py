@@ -115,3 +115,41 @@ def test_template_llm_and_to_tts():
     assert "great" in prompt.lower() or "That's" in prompt or "That" in prompt
     assert len(desc) > 20
     assert TemplateLLM().REPLY in out.transcript or out.transcript == TemplateLLM().REPLY
+
+
+def test_indic_7b_alias_and_words_helper():
+    from duplex_data.sarvam_scripts import INDIC_7B_LLM, resolve_llm_model
+    from duplex_data.tsr.llm import INDIC_7B_MODEL, _words_to_even_tsr
+
+    assert INDIC_7B_MODEL == "ai4bharat/Airavata"
+    assert resolve_llm_model("indic-7b") == INDIC_7B_LLM
+    assert resolve_llm_model("airavata") == "ai4bharat/Airavata"
+    rep = _words_to_even_tsr(
+        "ठीक है मैं मदद कर सकता हूँ",
+        language="hi",
+        meta={"llm": "test"},
+    )
+    assert rep.direction == "output"
+    assert len(rep.words()) >= 3
+    assert any(e.kind == "boundary" for e in rep.events)
+
+
+def test_indic_22_aliases_and_lang_table():
+    from duplex_data.sarvam_scripts import (
+        INDIC_22_LANGS,
+        INDIC_22_LLM,
+        LANG_NAME,
+        PARAM2_LLM,
+        resolve_llm_model,
+    )
+    from duplex_data.tsr.llm import INDIC_22_MODEL
+
+    assert INDIC_22_MODEL == "sarvamai/sarvam-30b"
+    assert resolve_llm_model("indic-22") == INDIC_22_LLM
+    assert resolve_llm_model("sarvam-22") == INDIC_22_LLM
+    assert resolve_llm_model("param2") == PARAM2_LLM
+    assert len(INDIC_22_LANGS) == 22
+    for code in INDIC_22_LANGS:
+        assert code in LANG_NAME, code
+    assert LANG_NAME["te"] == "Telugu"
+    assert LANG_NAME["brx"] == "Bodo"

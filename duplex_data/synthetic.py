@@ -237,7 +237,16 @@ def main(argv: list[str] | None = None) -> None:
         default=None,
         help=f"Comma domains. Default all. Options: {','.join(list_domains())}",
     )
-    p.add_argument("--llm-model", type=str, default=DEFAULT_LLM)
+    p.add_argument(
+        "--llm-model",
+        type=str,
+        default=DEFAULT_LLM,
+        help=(
+            "HF id or alias: sarvamai/sarvam-30b / indic-22 (default, 22 Indic langs), "
+            "sarvam-m, param2 → Param2-17B, "
+            "indic-7b / airavata → ai4bharat/Airavata (Hindi 7B only)"
+        ),
+    )
     p.add_argument("--llm-load-in-4bit", action="store_true")
     p.add_argument(
         "--strict-llm",

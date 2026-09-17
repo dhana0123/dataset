@@ -26,6 +26,8 @@ def run(
     transcript_path: Path | str | None = None,
     align_model: str | None = None,
     llm_backend: str = "template",
+    llm_model: str | None = None,
+    llm_load_in_4bit: bool = False,
     speaker_style: str = "phone",
     skip_tts: bool = False,
 ) -> dict:
@@ -51,7 +53,13 @@ def run(
     logger.info("Input TSR:\n%s", tsr_to_text(input_tsr))
 
     logger.info("2/4 LLM → output TSR (%s)", llm_backend)
-    output_tsr = generate_tsr(input_tsr, backend=llm_backend)
+    output_tsr = generate_tsr(
+        input_tsr,
+        backend=llm_backend,
+        device=device,
+        load_in_4bit=llm_load_in_4bit,
+        model_id=llm_model,
+    )
     out_json = out_dir / "output_tsr.json"
     out_txt = out_dir / "output_tsr.txt"
     output_tsr.save(out_json)
