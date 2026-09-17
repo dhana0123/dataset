@@ -28,6 +28,7 @@ speech-plan = [
     "whisperx",
 ]
 dev = ["pytest"]
+train = ["accelerate"]
 
 [project.scripts]
 duplex-prepare = "duplex_data.prepare:main"
@@ -35,6 +36,9 @@ duplex-synthetic = "duplex_data.synthetic:main"
 duplex-speech-extract = "duplex_data.speech_plan.extract:main"
 duplex-speech-align = "duplex_data.speech_plan.align:main"
 duplex-speech-annotate = "duplex_data.speech_plan.annotator:main"
+duplex-tsr = "duplex_data.tsr.run:main"
+duplex-train-asr = "duplex_data.temporal.train_asr:main"
+duplex-train-tts = "duplex_data.temporal.train_tts:main"
 
 [build-system]
 requires = ["setuptools>=61"]

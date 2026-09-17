@@ -1,0 +1,26 @@
+# Phase 3 stub — Sarvam-30B LoRA on TSR (NOT implemented yet).
+# LLM stays TemplateLLM until this is built.
+#
+# Planned flow:
+#   input_tsr.txt  →  sarvamai/sarvam-30b + QLoRA  →  output_tsr.txt
+
+model_id: sarvamai/sarvam-30b
+method: qlora
+load_in_4bit: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05
+target_modules: [q_proj, v_proj, k_proj, o_proj]
+max_seq_len: 4096
+data:
+  train: ./tsr_train/llm_pairs.jsonl   # {"input": "<tsr text>", "output": "<tsr text>"}
+  eval: ./tsr_train/llm_pairs_eval.jsonl
+training:
+  epochs: 2
+  lr: 2.0e-4
+  batch_size: 1
+  grad_accum: 16
+  bf16: true
+notes: >
+  Do not run until ASR TemporalFusion and TTS TemporalEncoder are trained
+  and you have paired input/output TSR text. Use duplex_data.tsr.llm.TemplateLLM until then.

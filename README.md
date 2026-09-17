@@ -191,6 +191,39 @@ python -m duplex_data.speech_plan.annotator --root ./speech_plans
 
 Console scripts: `duplex-speech-extract`, `duplex-speech-align`, `duplex-speech-annotate`.
 
+### Temporal Speech Representation (duplex I/O)
+
+Canonical **same** format for user input and TTS output (timestamps in ms):
+
+```bash
+# Smallest E2E: Audio → TSR → LLM (template) → TSR → TTS
+python -m duplex_data.tsr.run --audio user.wav --lang en \
+  --out ./tsr_runs/clip1 --device cpu
+
+# Align-only input + skip TTS (inspect TSR JSON/txt only)
+python -m duplex_data.tsr.run --audio user.wav --transcript user.txt --lang te \
+  --out ./tsr_runs/clip1 --skip-tts
+```
+
+Writes `input_tsr.json/.txt`, `output_tsr.json/.txt`, and `reply.wav` (unless `--skip-tts`).
+Console script: `duplex-tsr`.
+
+### Train temporal modules (ASR → TTS → LLM later)
+
+Order: **ASR TemporalFusion first**, then **TTS TemporalEncoder** (Parler frozen, **no LoRA**), then later Sarvam-30B LoRA (stub only).
+
+```bash
+# Phase 1 — freeze Conformer intent; train fusion on TSR JSON (encoder=none works offline)
+python -m duplex_data.temporal.train_asr \
+  --data ./tsr_runs --encoder none --epochs 5 --device cpu --out ./runs/asr_fusion
+
+# Phase 2 — train TemporalEncoder only (no Parler LoRA)
+python -m duplex_data.temporal.train_tts \
+  --data ./tsr_runs --epochs 3 --device cpu --out ./runs/tts_conditioner
+```
+
+LLM stays `TemplateLLM` until Phase 3; see [`duplex_data/temporal/config_llm_lora.yaml`](duplex_data/temporal/config_llm_lora.yaml).
+
 **Auto vs human**
 
 | Lane / field | Source |
