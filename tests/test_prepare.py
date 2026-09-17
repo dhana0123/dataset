@@ -83,7 +83,43 @@ def test_write_three_inspect_samples(tmp_path: Path):
 
 def test_whisperx_align_model_map_and_split():
     assert asr_mod.split_words("  namaste  bhai ") == ["namaste", "bhai"]
-    assert "hi" in asr_mod.WHISPERX_ALIGN_MODELS
+    for lang in ("hi", "te", "ml", "ur", "ta", "kn", "mr", "gu", "bn", "pa", "or"):
+        assert lang in asr_mod.WHISPERX_ALIGN_MODELS
+        repo = asr_mod.whisperx_align_model_for_language(lang)
+        assert isinstance(repo, str) and "/" in repo
+    assert asr_mod.whisperx_align_model_for_language("hindi") == (
+        asr_mod.WHISPERX_ALIGN_MODELS["hi"]
+    )
+    assert asr_mod.WHISPERX_ALIGN_MODELS["ta"].startswith("Harveenchadha/")
+    assert asr_mod.WHISPERX_ALIGN_MODELS["te"] == (
+        "anuragshas/wav2vec2-large-xlsr-53-telugu"
+    )
+
+
+def test_whisperx_align_model_override_path():
+    """Override is accepted by align_words_whisperx without requiring GPU/WhisperX load.
+
+    Empty transcript returns early with the override model id.
+    """
+    mono = np.zeros(1600, dtype=np.float32)
+    spans, repo = asr_mod.align_words_whisperx(
+        mono,
+        16_000,
+        "   ",
+        "te",
+        device="cpu",
+        align_model="org/custom-wav2vec2-override",
+    )
+    assert spans == []
+    assert repo == "org/custom-wav2vec2-override"
+
+
+def test_whisperx_align_model_unknown_lang():
+    try:
+        asr_mod.whisperx_align_model_for_language("xx")
+        raise AssertionError("expected AlignmentError")
+    except asr_mod.AlignmentError as exc:
+        assert "--align-model" in str(exc)
 
 
 def test_mask_in_diarize():

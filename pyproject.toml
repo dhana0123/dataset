@@ -33,6 +33,7 @@ dev = ["pytest"]
 duplex-prepare = "duplex_data.prepare:main"
 duplex-synthetic = "duplex_data.synthetic:main"
 duplex-speech-extract = "duplex_data.speech_plan.extract:main"
+duplex-speech-align = "duplex_data.speech_plan.align:main"
 duplex-speech-annotate = "duplex_data.speech_plan.annotator:main"
 
 [build-system]

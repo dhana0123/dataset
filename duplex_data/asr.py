@@ -46,12 +46,20 @@ CONFORMER_REPO_BY_LANG: dict[str, str] = {
     "kannada": KN_CONFORMER,
 }
 
-# Explicit WhisperX wav2vec2 align models for our focus languages.
+# WhisperX wav2vec2 CTC aligners (HF ids passed as model_name).
+# Defaults for hi/te/ml/ur match WhisperX; ta/kn/mr/gu/bn/pa/or use Vakyansh HF.
 WHISPERX_ALIGN_MODELS: dict[str, str] = {
     "hi": "theainerd/Wav2Vec2-large-xlsr-hindi",
     "te": "anuragshas/wav2vec2-large-xlsr-53-telugu",
-    "ta": "manandey/wav2vec2-large-xlsr-tamil",
-    "kn": "amoghsgopadi/wav2vec2-large-xlsr-kn",
+    "ml": "gvs/wav2vec2-large-xlsr-malayalam",
+    "ur": "kingabzpro/wav2vec2-large-xls-r-300m-Urdu",
+    "ta": "Harveenchadha/vakyansh-wav2vec2-tamil-tam-100",
+    "kn": "Harveenchadha/vakyansh-wav2vec2-kannada-knm-560",
+    "mr": "Harveenchadha/vakyansh-wav2vec2-marathi-mrm-100",
+    "gu": "Harveenchadha/vakyansh-wav2vec2-gujarati-gum-100",
+    "bn": "Harveenchadha/vakyansh-wav2vec2-bengali-bnm-200",
+    "pa": "Harveenchadha/vakyansh-wav2vec2-punjabi-pam-100",
+    "or": "Harveenchadha/vakyansh-wav2vec2-odia-orm-100",
 }
 
 WordSpan = tuple[str, tuple[float, float]]
@@ -111,7 +119,31 @@ def conformer_repo_for_language(language: str) -> str:
 
 def language_id_for_nemo(language: str) -> str:
     lang = (language or "hi").lower().replace("_", "-").split("-")[0]
-    aliases = {"hin": "hi", "hindi": "hi", "tam": "ta", "tel": "te", "ben": "bn", "mar": "mr", "kan": "kn"}
+    aliases = {
+        "hin": "hi",
+        "hindi": "hi",
+        "tam": "ta",
+        "tamil": "ta",
+        "tel": "te",
+        "telugu": "te",
+        "ben": "bn",
+        "bengali": "bn",
+        "mar": "mr",
+        "marathi": "mr",
+        "kan": "kn",
+        "kannada": "kn",
+        "mal": "ml",
+        "malayalam": "ml",
+        "urd": "ur",
+        "urdu": "ur",
+        "guj": "gu",
+        "gujarati": "gu",
+        "pan": "pa",
+        "punjabi": "pa",
+        "odi": "or",
+        "odia": "or",
+        "oriya": "or",
+    }
     return aliases.get(lang, lang)
 
 
@@ -120,7 +152,8 @@ def whisperx_align_model_for_language(language: str) -> str:
     if lang not in WHISPERX_ALIGN_MODELS:
         raise AlignmentError(
             f"No WhisperX align model mapped for language={lang!r}. "
-            f"Supported: {sorted(WHISPERX_ALIGN_MODELS)}"
+            f"Supported: {sorted(WHISPERX_ALIGN_MODELS)}. "
+            "Pass --align-model <hf_id> to override (e.g. a language-specific MMS CTC)."
         )
     return WHISPERX_ALIGN_MODELS[lang]
 
@@ -288,8 +321,16 @@ def _extract_transcript(out) -> str:
 _align_cache: dict[str, tuple[object, object]] = {}
 
 
-def load_whisperx_align_model(language: str, device: str = "cuda"):
-    """Download/cache WhisperX wav2vec2 aligner for ``language``."""
+def load_whisperx_align_model(
+    language: str,
+    device: str = "cuda",
+    *,
+    align_model: str | None = None,
+):
+    """Download/cache WhisperX wav2vec2 aligner for ``language``.
+
+    ``align_model`` (HF id) overrides the language map when set.
+    """
     try:
         import whisperx
     except ImportError as exc:
@@ -298,17 +339,23 @@ def load_whisperx_align_model(language: str, device: str = "cuda"):
         ) from exc
 
     lang = language_id_for_nemo(language)
-    align_repo = whisperx_align_model_for_language(lang)
+    align_repo = (align_model or "").strip() or whisperx_align_model_for_language(lang)
     key = f"{lang}|{align_repo}|{device}"
     if key in _align_cache:
         return _align_cache[key][0], _align_cache[key][1], align_repo
 
     logger.info("Loading WhisperX align model %s (lang=%s) …", align_repo, lang)
-    model_a, metadata = whisperx.load_align_model(
-        language_code=lang,
-        device=device,
-        model_name=align_repo,
-    )
+    try:
+        model_a, metadata = whisperx.load_align_model(
+            language_code=lang,
+            device=device,
+            model_name=align_repo,
+        )
+    except Exception as exc:
+        raise AlignmentError(
+            f"Failed to load WhisperX align model {align_repo!r} for language={lang!r}: {exc}. "
+            "Pass --align-model <hf_id> with a valid Wav2Vec2ForCTC checkpoint."
+        ) from exc
     _align_cache[key] = (model_a, metadata)
     logger.info("WhisperX align ready: %s", align_repo)
     return model_a, metadata, align_repo
@@ -321,8 +368,15 @@ def align_words_whisperx(
     language: str,
     *,
     device: str = "cuda",
+    align_model: str | None = None,
 ) -> tuple[list[WordSpan], str]:
     """Strict WhisperX align. Raises AlignmentError on failure."""
+    lang = language_id_for_nemo(language)
+    align_repo_hint = (align_model or "").strip() or whisperx_align_model_for_language(lang)
+    words = split_words(transcript)
+    if not words:
+        return [], align_repo_hint
+
     try:
         import whisperx
     except ImportError as exc:
@@ -330,12 +384,9 @@ def align_words_whisperx(
             "WhisperX is required for word timing. Install: pip install whisperx"
         ) from exc
 
-    words = split_words(transcript)
-    if not words:
-        return [], whisperx_align_model_for_language(language)
-
-    lang = language_id_for_nemo(language)
-    model_a, metadata, align_repo = load_whisperx_align_model(lang, device=device)
+    model_a, metadata, align_repo = load_whisperx_align_model(
+        lang, device=device, align_model=align_model
+    )
     audio = resample_mono(mono, sample_rate, ASR_SAMPLE_RATE)
     duration = float(len(audio) / ASR_SAMPLE_RATE)
     segments = [{"start": 0.0, "end": duration, "text": transcript}]
@@ -375,9 +426,17 @@ def align_words(
     language: str,
     *,
     device: str = "cuda",
+    align_model: str | None = None,
 ) -> tuple[list[WordSpan], str]:
     """Strict: WhisperX only."""
-    return align_words_whisperx(mono, sample_rate, transcript, language, device=device)
+    return align_words_whisperx(
+        mono,
+        sample_rate,
+        transcript,
+        language,
+        device=device,
+        align_model=align_model,
+    )
 
 
 def transcribe_words_indic_conformer(

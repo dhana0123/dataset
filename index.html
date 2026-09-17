@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DATAINFO — Dataset catalog</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --border: #2d3a4d;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --red: #e85d5d;
+      --orange: #fb923c;
+      --yellow: #fbbf24;
+      --link: #4ea1ff;
+      --sticky-bg: #1a2332;
+      --header-bg: #243044;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding: 24px 20px 48px;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 6px; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 16px; }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px 18px;
+      font-size: 0.85rem; color: var(--muted); margin-bottom: 16px;
+    }
+    .wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 1600px;
+      width: max-content;
+      font-size: 0.875rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background: var(--header-bg);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+    tr:hover td { background: #1f2a3d; }
+    tr:hover td.sticky { background: #243044; }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Sticky first two columns: # and Dataset */
+    th:nth-child(1), td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: var(--sticky-bg);
+      min-width: 44px;
+    }
+    th:nth-child(1) { z-index: 4; background: var(--header-bg); }
+    th:nth-child(3), td:nth-child(3) {
+      position: sticky;
+      left: 44px;
+      z-index: 2;
+      background: var(--sticky-bg);
+      min-width: 220px;
+      max-width: 260px;
+      white-space: normal;
+      font-weight: 500;
+    }
+    th:nth-child(3) { z-index: 4; background: var(--header-bg); }
+
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: lowercase;
+    }
+    .chip.red { background: #4a2222; color: var(--red); }
+    .chip.orange { background: #4a3218; color: var(--orange); }
+    .chip.yellow { background: #3d3510; color: var(--yellow); }
+    .chip.dash { background: #2a3344; color: var(--muted); }
+
+    .scroll-hint { color: var(--muted); font-size: 0.8rem; margin-top: 10px; }
+    footer { margin-top: 20px; font-size: 0.85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>Dataset candidates (DATAINFO)</h1>
+  <p class="sub">Single catalog for open-source and internal speech data. Scroll horizontally to see all columns.</p>
+  <div class="legend">
+    <span><span class="chip red">red</span> P0 core / DualTurn train-eval</span>
+    <span><span class="chip orange">orange</span> P1 scale/lang</span>
+    <span><span class="chip yellow">yellow</span> P2 niche / ASR benchmark</span>
+    <span><span class="chip dash">—</span> not DualTurn-focused</span>
+  </div>
+
+  <div class="wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Pri</th>
+          <th>Dataset</th>
+          <th>Scale</th>
+          <th>Indian langs</th>
+          <th>Pipeline / type</th>
+          <th>DualTurn</th>
+          <th>2-spk conv</th>
+          <th>Turn-taking</th>
+          <th>Overlap</th>
+          <th>Timestamps</th>
+          <th>Transcript</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sticky">1</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">IndicVoices</td>
+          <td>~23.7K h</td>
+          <td>22</td>
+          <td>ASR / conversation</td>
+          <td><span class="chip orange">orange</span></td>
+          <td>some</td>
+          <td>limited</td>
+          <td>limited</td>
+          <td>speech-level</td>
+          <td>yes (subset)</td>
+          <td><a href="https://huggingface.co/datasets/ai4bharat/IndicVoices" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">2</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">IndicVoices-R</td>
+          <td>1,704 h</td>
+          <td>—</td>
+          <td>TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://huggingface.co/datasets/ai4bharat/indicvoices_r" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">3</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">IndicTTS</td>
+          <td>large</td>
+          <td>—</td>
+          <td>TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.iitm.ac.in/donlab/indictts/database" target="_blank" rel="noopener">IITM</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">4</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">Indic DiarBench</td>
+          <td>~108 h</td>
+          <td>22</td>
+          <td>Duplex / diarization</td>
+          <td><span class="chip red">red</span></td>
+          <td>yes / multi</td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>yes</td>
+          <td><a href="https://huggingface.co/datasets/sarvamai/indic-diarbench" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">5</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">Your 100h recordings</td>
+          <td>~100 h</td>
+          <td>target langs</td>
+          <td>DualTurn (core)</td>
+          <td><span class="chip red">red</span></td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>can create</td>
+          <td>can create</td>
+          <td>Internal</td>
+        </tr>
+        <tr>
+          <td class="sticky">6</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">Rasa</td>
+          <td>~3 langs</td>
+          <td>yes</td>
+          <td>Expressive TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://github.com/AI4Bharat/Rasa" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">7</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">SLR66 — Telugu</td>
+          <td>speech corpus</td>
+          <td>Te</td>
+          <td>ASR / TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/66/" target="_blank" rel="noopener">OpenSLR 66</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">8</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">SLR65 — Tamil</td>
+          <td>speech corpus</td>
+          <td>Ta</td>
+          <td>ASR / TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/65/" target="_blank" rel="noopener">OpenSLR 65</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">9</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">SLR64 — Marathi</td>
+          <td>speech corpus</td>
+          <td>Mr</td>
+          <td>ASR / TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/64/" target="_blank" rel="noopener">OpenSLR 64</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">10</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">SLR63 — Malayalam</td>
+          <td>speech corpus</td>
+          <td>Ml</td>
+          <td>ASR / TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/63/" target="_blank" rel="noopener">OpenSLR 63</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">11</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">SLR78 — Gujarati</td>
+          <td>speech corpus</td>
+          <td>Gu</td>
+          <td>ASR / TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/78/" target="_blank" rel="noopener">OpenSLR 78</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">12</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">SLR79 — Kannada</td>
+          <td>speech corpus</td>
+          <td>Kn</td>
+          <td>ASR / TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/79/" target="_blank" rel="noopener">OpenSLR 79</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">13</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">Gram Vaani / SLR118</td>
+          <td>1,111 h</td>
+          <td>Hi</td>
+          <td>Noisy / spontaneous ASR</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/118/" target="_blank" rel="noopener">OpenSLR 118</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">14</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">MUCS / SLR103</td>
+          <td>~300 h</td>
+          <td>Hi/Mr/Or</td>
+          <td>ASR</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://www.openslr.org/103/" target="_blank" rel="noopener">OpenSLR 103</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">15</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">Doctor–Patient Indic</td>
+          <td>—</td>
+          <td>9</td>
+          <td>Duplex / dialogue</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://huggingface.co/datasets?search=doctor+patient+indic+speech" target="_blank" rel="noopener">HF search</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">16</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">VocalSound</td>
+          <td>21K clips</td>
+          <td>no</td>
+          <td>Nonverbal detector</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://github.com/YuanGongND/vocalsound" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">17</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">ReCANVo</td>
+          <td>—</td>
+          <td>no</td>
+          <td>Nonverbal / affective</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://huggingface.co/datasets?search=ReCANVo" target="_blank" rel="noopener">HF search</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">18</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">Skit Emotion TTS</td>
+          <td>30 min</td>
+          <td>en-IN</td>
+          <td>Emotion TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://github.com/skit-ai/emotion-tts-dataset" target="_blank" rel="noopener">GitHub</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">19</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">Indian TTS Emotion 60min</td>
+          <td>~68 min</td>
+          <td>Hi/en-IN</td>
+          <td>Emotion TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://huggingface.co/datasets/sarthwa8/indian-tts-emotion-60min" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">20</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">otoSpeech Turn 104h</td>
+          <td>104 h</td>
+          <td>no</td>
+          <td>Full duplex / architecture</td>
+          <td><span class="chip dash">—</span></td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td><a href="https://huggingface.co/datasets/otoearth/otoSpeech-full-duplex-turn-104h" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">21</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">Humyn MultiSpeaker ASR</td>
+          <td>~1.06 GB sample</td>
+          <td>14</td>
+          <td>DualTurn base</td>
+          <td><span class="chip red">red</span></td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>partial</td>
+          <td>yes</td>
+          <td>yes</td>
+          <td><a href="https://huggingface.co/datasets/humyn-labs/Indic-High-Fidelity-MultiSpeaker-ASR" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">22</td>
+          <td><span class="chip red">red</span></td>
+          <td class="sticky">Indic Natural Conversations</td>
+          <td>~1.99 GB sample</td>
+          <td>9</td>
+          <td>Conversation / DualTurn</td>
+          <td><span class="chip red">red</span></td>
+          <td>yes</td>
+          <td>yes</td>
+          <td>partial</td>
+          <td>yes</td>
+          <td>yes</td>
+          <td><a href="https://huggingface.co/datasets/snorbyte/indic-audio-natural-conversations-sample" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">23</td>
+          <td><span class="chip orange">orange</span></td>
+          <td class="sticky">VAANI</td>
+          <td>~31K h</td>
+          <td>100+</td>
+          <td>ASR / accents</td>
+          <td><span class="chip orange">orange</span></td>
+          <td>no</td>
+          <td>no</td>
+          <td>no</td>
+          <td>speech-level</td>
+          <td>partial</td>
+          <td><a href="https://huggingface.co/datasets/ARTPARK-IISc/Vaani" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">24</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">Google FLEURS</td>
+          <td>~12h / lang</td>
+          <td>14</td>
+          <td>ASR benchmark</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td>no</td>
+          <td>no</td>
+          <td>no</td>
+          <td>no turn ts</td>
+          <td>yes</td>
+          <td><a href="https://huggingface.co/datasets/google/fleurs" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">25</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">TTS Indian Languages</td>
+          <td>66.4 min</td>
+          <td>yes</td>
+          <td>TTS pilot</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://huggingface.co/datasets/praneeetha/tts-indian-languages" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+        <tr>
+          <td class="sticky">26</td>
+          <td><span class="chip yellow">yellow</span></td>
+          <td class="sticky">Indian TTS Emotion 28.8 min</td>
+          <td>28.8 min</td>
+          <td>yes</td>
+          <td>Emotion TTS</td>
+          <td><span class="chip dash">—</span></td>
+          <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          <td><a href="https://huggingface.co/datasets/champTUSHARg007/indian-tts-dataset" target="_blank" rel="noopener">HF</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="scroll-hint">Tip: scroll sideways inside the table area. Columns <strong>#</strong> and <strong>Dataset</strong> stay fixed.</p>
+  <footer>
+    Source: <a href="DATAINFO.md">DATAINFO.md</a> ·
+    Roadmap: <a href="../TODO.md">TODO.md</a>
+  </footer>
+</body>
+</html>

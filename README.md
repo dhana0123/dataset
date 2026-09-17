@@ -172,20 +172,56 @@ python -m duplex_data.speech_plan.extract path/to/clip.wav \
 python -m duplex_data.speech_plan.extract path/to/wav_dir \
   --out ./speech_plans --lang te --asr-backend whisper --device cuda
 
+# 1b) Existing transcript: skip ASR, WhisperX forced-align only
+python -m duplex_data.speech_plan.align \
+  --audio clip.wav --transcript clip.txt --lang te \
+  --out ./alignments/clip.json --device cuda
+
+# Or wire align into extract (same draft speech_plan.json path):
+python -m duplex_data.speech_plan.extract clip.wav \
+  --transcript clip.txt --out ./speech_plans --lang te --device cuda
+
+# Optional aligner override (HF Wav2Vec2ForCTC id):
+#   --align-model facebook/mms-300m-1130-forced-aligner
+
 # 2) Annotate (global state, emphasis, boundaries, edit spans)
 python -m duplex_data.speech_plan.annotator --root ./speech_plans
 # open http://127.0.0.1:8765
 ```
 
+Console scripts: `duplex-speech-extract`, `duplex-speech-align`, `duplex-speech-annotate`.
+
 **Auto vs human**
 
 | Lane / field | Source |
 | --- | --- |
-| CONTENT + word times | ASR (Whisper word timestamps, or IndicConformer + WhisperX) |
+| CONTENT + word times | ASR (Whisper word timestamps, or IndicConformer + WhisperX), **or** provided transcript + WhisperX align |
 | PAUSE / PITCH / ENERGY / RATE | Auto from timing + Praat (parselmouth) / librosa |
 | EMPHASIS / BOUNDARY | Weak auto-propose; confirm in UI |
 | NONVERBAL | Human — English event ids **or Indic native-script transcripts** (`हम्म`, `హ్మ్`, …) |
 | GLOBAL STATE | Human (calm / serious / excited / reassuring / …) |
+
+### WhisperX align languages
+
+Forced alignment uses language-specific Wav2Vec2 CTC models (WhisperX
+`model_name`). IndicConformer is ASR-only and is **not** the aligner.
+
+| Lang | Align model (HF) |
+| --- | --- |
+| hi | `theainerd/Wav2Vec2-large-xlsr-hindi` |
+| te | `anuragshas/wav2vec2-large-xlsr-53-telugu` |
+| ml | `gvs/wav2vec2-large-xlsr-malayalam` |
+| ur | `kingabzpro/wav2vec2-large-xls-r-300m-Urdu` |
+| ta | `Harveenchadha/vakyansh-wav2vec2-tamil-tam-100` |
+| kn | `Harveenchadha/vakyansh-wav2vec2-kannada-knm-560` |
+| mr | `Harveenchadha/vakyansh-wav2vec2-marathi-mrm-100` |
+| gu | `Harveenchadha/vakyansh-wav2vec2-gujarati-gum-100` |
+| bn | `Harveenchadha/vakyansh-wav2vec2-bengali-bnm-200` |
+| pa | `Harveenchadha/vakyansh-wav2vec2-punjabi-pam-100` |
+| or | `Harveenchadha/vakyansh-wav2vec2-odia-orm-100` |
+
+`--align-model <hf_id>` always wins over the table. MMS fallbacks are manual
+only after pilot QA (not automatic).
 
 ### Nonverbal annotation
 
