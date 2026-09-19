@@ -57,14 +57,18 @@ def test_pack_tsr_features_shapes():
 def test_fusion_forward_and_loss():
     asr_dim = 32
     B, T = 2, 16
-    model = TemporalFusionModule(asr_dim=asr_dim, side_dim=len(FEATURE_NAMES), d_model=64, use_transformer=True)
+    model = TemporalFusionModule(asr_dim=asr_dim, d_model=64, use_transformer=True)
     h = torch.randn(B, T, asr_dim)
-    side = torch.randn(B, T, len(FEATURE_NAMES))
     lengths = torch.tensor([16, 10])
-    out = model(h, side, lengths=lengths)
+    out = model(h, lengths=lengths)
     assert out["E_t"].shape == (B, T, 64)
     assert out["pause_logit"].shape == (B, T)
     assert out["pitch_logit"].shape[2] > 1
+
+    import inspect
+
+    params = list(inspect.signature(TemporalFusionModule.forward).parameters)
+    assert params == ["self", "h_asr", "lengths"]
 
     batch = {
         "pause": torch.zeros(B, T),
@@ -80,6 +84,93 @@ def test_fusion_forward_and_loss():
     assert torch.isfinite(loss)
     assert "total" in stats
     loss.backward()
+
+
+class _StubNemoEncoder:
+    """NeMo-shaped preprocessor+encoder: [B, D, T], hop 160 then ×4."""
+
+    D = 24
+
+    def preprocessor(self, input_signal, length):
+        # 10 ms at 16 kHz = 160 samples.
+        hop = 160
+        t_mel = torch.clamp(length // hop, min=1)
+        t_max = int(t_mel.max().item())
+        feat = input_signal.new_zeros(input_signal.size(0), self.D, t_max)
+        for b in range(input_signal.size(0)):
+            n = int(t_mel[b].item())
+            # Encode waveform energy so H_asr is not a constant / not zeros.
+            e = input_signal[b, : int(length[b].item())].pow(2).mean().sqrt().clamp_min(1e-4)
+            feat[b, :, :n] = e
+            feat[b, 0, :n] = torch.linspace(0, 1, n, device=feat.device) * e
+        return feat, t_mel
+
+    def encoder(self, audio_signal, length):
+        encoded = audio_signal[:, :, ::4].contiguous()
+        enc_len = torch.clamp(length // 4, min=1)
+        return encoded, enc_len
+
+
+def test_encode_h_asr_is_real_not_zeros():
+    from duplex_data.temporal.h_asr import encode_wavs_to_h_asr
+
+    enc = _StubNemoEncoder()
+    wav_a = torch.ones(1, 16000)
+    wav_b = torch.full((1, 16000), 2.0)
+    lens = torch.tensor([16000])
+    tgt = torch.tensor([32])
+    h_a = encode_wavs_to_h_asr(enc, wav_a, lens, target_t=32, target_lengths=tgt)
+    h_b = encode_wavs_to_h_asr(enc, wav_b, lens, target_t=32, target_lengths=tgt)
+    assert h_a.shape == (1, 32, _StubNemoEncoder.D)
+    assert h_a.abs().sum() > 0
+    assert not torch.allclose(h_a, torch.zeros_like(h_a))
+    assert not torch.allclose(h_a, h_b)
+
+
+def test_train_one_epoch_encoder_frozen_and_no_side(tmp_path: Path):
+    import wave
+
+    from duplex_data.temporal.dataset import TSRFrameDataset, collate_tsr_frames
+    from duplex_data.temporal.h_asr import encode_wavs_to_h_asr
+    from duplex_data.temporal.train_asr import train_one_epoch
+
+    rep = _sample_tsr()
+    wav_path = tmp_path / "clip.wav"
+    n = 16000 * 1250 // 1000
+    pcm = (torch.randn(n).clamp(-1, 1).numpy() * 32767.0).astype("int16")
+    with wave.open(str(wav_path), "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(16000)
+        wf.writeframes(pcm.tobytes())
+    d = rep.to_dict()
+    d["meta"] = {"audio_path": str(wav_path)}
+    (tmp_path / "input_tsr.json").write_text(
+        __import__("json").dumps(d, indent=2), encoding="utf-8"
+    )
+    ds = TSRFrameDataset(tmp_path, frame_ms=40)
+    item = ds[0]
+    assert "features" not in item
+    loader = torch.utils.data.DataLoader(
+        ds,
+        batch_size=1,
+        collate_fn=lambda b: collate_tsr_frames(b, asr_dim=_StubNemoEncoder.D),
+    )
+    batch = next(iter(loader))
+    assert "features" not in batch
+    encoder = _StubNemoEncoder()
+    h = encode_wavs_to_h_asr(
+        encoder, batch["wav"], batch["wav_lengths"],
+        target_t=int(batch["h_asr"].size(1)),
+        target_lengths=batch["lengths"],
+    )
+    assert not torch.allclose(h, torch.zeros_like(h))
+    model = TemporalFusionModule(asr_dim=_StubNemoEncoder.D, d_model=32)
+    optim = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    stats = train_one_epoch(model, loader, optim, "cpu", encoder=encoder)
+    assert "total" in stats
+    out = model(h, lengths=batch["lengths"])
+    assert "pause_logit" in out
 
 
 def test_train_asr_one_batch(tmp_path: Path):

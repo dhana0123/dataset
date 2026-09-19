@@ -1,4 +1,4 @@
-"""TemporalFusion: concat H_asr (+ side features) → E_t → TSR heads."""
+"""TemporalFusion: H_asr → E_t → TSR heads."""
 
 from __future__ import annotations
 
@@ -10,18 +10,16 @@ from duplex_data.temporal.features import (
     BOUNDARY_LABELS,
     EMPHASIS_LABELS,
     ENERGY_LABELS,
-    FEATURE_NAMES,
     PITCH_LABELS,
 )
 
 
 class TemporalFusionModule(nn.Module):
-    """Concat + projection (+ optional 2-layer TransformerEncoder)."""
+    """Project encoder frames, optional 2-layer Transformer, TSR heads."""
 
     def __init__(
         self,
         asr_dim: int,
-        side_dim: int = len(FEATURE_NAMES),
         d_model: int = 256,
         n_layers: int = 2,
         n_heads: int = 4,
@@ -30,11 +28,9 @@ class TemporalFusionModule(nn.Module):
     ):
         super().__init__()
         self.asr_dim = asr_dim
-        self.side_dim = side_dim
         self.d_model = d_model
-        in_dim = asr_dim + side_dim
         self.in_proj = nn.Sequential(
-            nn.Linear(in_dim, d_model),
+            nn.Linear(asr_dim, d_model),
             nn.ReLU(),
             nn.Dropout(dropout),
             nn.Linear(d_model, d_model),
@@ -65,12 +61,10 @@ class TemporalFusionModule(nn.Module):
     def forward(
         self,
         h_asr: torch.Tensor,
-        side: torch.Tensor,
         *,
         lengths: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
-        x = torch.cat([h_asr, side], dim=-1)
-        e = self.in_proj(x)
+        e = self.in_proj(h_asr)
         if self.use_transformer:
             key_padding = None
             if lengths is not None:

@@ -6,6 +6,7 @@ import json
 import logging
 from pathlib import Path
 
+import numpy as np
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
@@ -17,7 +18,7 @@ logger = logging.getLogger("duplex_data.temporal.dataset")
 
 
 class TSRFrameDataset(Dataset):
-    """Each item: packed frame features/targets from input_tsr.json or *.json TSR."""
+    """Each item: TSR head targets on a 40 ms grid, plus optional 16 kHz wav."""
 
     def __init__(
         self,
@@ -44,7 +45,6 @@ class TSRFrameDataset(Dataset):
             if name in {"input_tsr.json", "output_tsr.json"} or name.endswith("_tsr.json"):
                 paths.append(p)
                 continue
-            # Accept any JSON that looks like TSR
             try:
                 obj = json.loads(p.read_text(encoding="utf-8"))
             except Exception:
@@ -61,9 +61,11 @@ class TSRFrameDataset(Dataset):
         rep = TemporalSpeechRep.load(path)
         packed = pack_tsr_features(rep, frame_ms=self.frame_ms)
         tensors = pack_to_torch(packed)
+        tensors.pop("features", None)
         tensors["path"] = str(path)
-        tensors["features"] = tensors["features"]  # [T,F]
-        # Placeholder H_asr for encoder=none: zeros with configured dim filled in collate/train
+        wav = _load_wav_16k(_resolve_wav(path, rep.meta))
+        tensors["wav"] = torch.from_numpy(wav)
+        tensors["wav_length"] = torch.tensor(int(wav.shape[0]), dtype=torch.long)
         return tensors
 
 
@@ -72,10 +74,10 @@ def collate_tsr_frames(
     *,
     asr_dim: int,
 ) -> dict[str, torch.Tensor]:
-    """Pad variable-length frame sequences; synthesize zero H_asr for encoder=none."""
-    lengths = torch.tensor([b["features"].size(0) for b in batch], dtype=torch.long)
-    features = pad_sequence([b["features"] for b in batch], batch_first=True)
-    B, T, F = features.shape
+    """Pad frame targets; placeholder zero H_asr until the encoder overwrites it."""
+    lengths = torch.tensor([b["pause"].size(0) for b in batch], dtype=torch.long)
+    B = len(batch)
+    T = int(lengths.max().item()) if B else 1
     h_asr = torch.zeros(B, T, asr_dim, dtype=torch.float32)
 
     def _pad(key: str, dtype=torch.float32) -> torch.Tensor:
@@ -84,9 +86,12 @@ def collate_tsr_frames(
             return pad_sequence(seqs, batch_first=True, padding_value=0)
         return pad_sequence(seqs, batch_first=True, padding_value=0.0)
 
-    out = {
+    wavs = pad_sequence([b["wav"] for b in batch], batch_first=True, padding_value=0.0)
+    wav_lengths = torch.stack([b["wav_length"] for b in batch])
+    return {
         "h_asr": h_asr,
-        "features": features,
+        "wav": wavs,
+        "wav_lengths": wav_lengths,
         "lengths": lengths,
         "pause": _pad("pause"),
         "hesitation": _pad("hesitation"),
@@ -97,4 +102,42 @@ def collate_tsr_frames(
         "f0_norm": _pad("f0_norm"),
         "energy_norm": _pad("energy_norm"),
     }
-    return out
+
+
+def _resolve_wav(json_path: Path, meta: dict) -> Path | None:
+    raw = meta.get("audio_path") if isinstance(meta, dict) else None
+    if raw:
+        p = Path(str(raw))
+        if p.is_file():
+            return p
+        sibling = json_path.parent / p.name
+        if sibling.is_file():
+            return sibling
+    for cand in sorted(json_path.parent.glob("*.wav")):
+        return cand
+    return None
+
+
+def _load_wav_16k(path: Path | None) -> np.ndarray:
+    if path is None:
+        return np.zeros(1, dtype=np.float32)
+    try:
+        from duplex_data.asr import ASR_SAMPLE_RATE, resample_mono
+
+        try:
+            import soundfile as sf
+
+            data, sr = sf.read(str(path), always_2d=True, dtype="float32")
+            return resample_mono(data[:, 0], int(sr), ASR_SAMPLE_RATE)
+        except ImportError:
+            import wave
+
+            with wave.open(str(path), "rb") as wf:
+                sr = int(wf.getframerate())
+                n = int(wf.getnframes())
+                raw = wf.readframes(n)
+            pcm = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32767.0
+            return resample_mono(pcm, sr, ASR_SAMPLE_RATE)
+    except Exception as exc:
+        logger.warning("Could not load wav %s (%s); using silence", path, exc)
+        return np.zeros(1, dtype=np.float32)

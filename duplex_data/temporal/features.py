@@ -9,7 +9,7 @@ import torch
 
 from duplex_data.tsr.schema import TemporalSpeechRep
 
-# Default ~40 ms encoder frames (Conformer ×4 on 10 ms mel).
+# Native IndicConformer-large stride: 10 ms mel hop × subsampling 4.
 DEFAULT_FRAME_MS = 40
 
 PITCH_LABELS = ("none", "rising", "falling", "stable", "warm/falling")
